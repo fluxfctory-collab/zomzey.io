@@ -1,0 +1,225 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: var(--navy);
+  color: var(--text-on-dark);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-base) var(--ease-out);
+}
+
+.site-header[data-scrolled='true'] {
+  border-bottom-color: var(--line-dark);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: var(--header-h);
+}
+
+.site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  /* Clear space ≥ half the rendered logo height */
+  padding-block: 12px;
+  margin-right: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.site-nav {
+  display: none;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-on-dark);
+  font-size: 0.9375rem;
+  font-weight: 540;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.site-nav__link:hover {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.site-header__signin,
+.site-header__join {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .site-nav {
+    display: block;
+  }
+  .site-header__signin,
+  .site-header__join {
+    display: inline-flex;
+  }
+  .site-header__menu {
+    display: none;
+  }
+}
+
+/* ---------- Explore disclosure ---------- */
+.explore {
+  position: relative;
+}
+
+.explore__trigger .icon {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.explore__trigger[aria-expanded='true'] {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.explore__trigger[aria-expanded='true'] .icon {
+  transform: rotate(180deg);
+}
+
+.explore__panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: -12px;
+  z-index: var(--z-panel);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  width: 600px;
+  padding: 20px;
+  border: 1px solid var(--line-dark);
+  border-radius: 16px;
+  background: var(--surface-dark);
+  box-shadow: var(--shadow-raised);
+}
+
+.explore__panel[hidden] {
+  display: none;
+}
+
+.explore__heading {
+  padding: 8px 12px 4px;
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+  font-weight: 540;
+}
+
+.explore__heading:not(:first-child) {
+  margin-top: 8px;
+}
+
+.explore__link {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.explore__link:hover {
+  background: rgb(255 255 255 / 0.07);
+}
+
+.explore__label {
+  font-weight: 580;
+  font-size: 0.9375rem;
+}
+
+.explore__desc {
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+}
+
+.explore__col--roles {
+  border-left: 1px solid var(--line-dark);
+  padding-left: 20px;
+}
+
+/* ---------- Mobile menu sheet ---------- */
+.dialog.menu-sheet {
+  width: min(420px, 100vw);
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 0 0 auto;
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .menu-sheet[open] {
+    animation: sheet-in var(--dur-base) var(--ease-out);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+.menu-sheet .dialog__body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.menu-sheet__primary a,
+.menu-sheet__roles a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 4px;
+  border-bottom: 1px solid var(--line-dark);
+  font-size: 1.1875rem;
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.menu-sheet__roles a {
+  font-size: 1rem;
+  font-weight: 500;
+  min-height: 44px;
+}
+
+.menu-sheet__heading {
+  margin-top: 28px;
+  margin-bottom: 4px;
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+  font-weight: 540;
+}
+
+.menu-sheet__actions {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 32px;
+  padding-bottom: env(safe-area-inset-bottom);
+}

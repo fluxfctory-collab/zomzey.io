@@ -1,0 +1,107 @@
+/*
+ * ZOMZEY Signal Atlas — design tokens.
+ * "Observed" values come from the live zomzey.io homepage HTML (7 Oct 2026);
+ * everything else is a proposed supporting token (see docs/STYLE_GUIDE.md).
+ */
+:root {
+  /* Observed identity */
+  --navy: #000222;
+  --paper: #fafaf8;
+  --ink: #0a0b1e;
+  --signal: #1fa9ff;
+  --creator: #ff6600;
+  --hub: #ffd42e;
+  --positive: #20e3a2;
+  --muted-on-light: #5a5c72;
+
+  /* Proposed supporting tokens */
+  --surface-dark: #101437;
+  --surface-dark-2: #171c48;
+  --text-on-dark: #ffffff;
+  --muted-on-dark: #b4bdd4;
+  --line-dark: rgb(255 255 255 / 0.18);
+  --line-light: rgb(10 11 30 / 0.13);
+  --signal-on-light: #0065a8;
+  --control-line-dark: #7d88a8; /* 3:1+ on navy for essential control borders */
+  --control-line-light: #8a8ca0; /* 3:1+ on paper for essential control borders */
+  --white: #ffffff;
+
+  /* Route rendering */
+  --route-idle: rgb(180 189 212 / 0.42);
+  --route-active: var(--signal);
+
+  /* Typography */
+  --font-sans: 'Instrument Sans Variable', 'Instrument Sans', system-ui, sans-serif;
+  --fs-h1: clamp(2.5rem, 1.18rem + 5.2vw, 5.25rem);
+  --fs-h2: clamp(1.875rem, 1.3rem + 2.2vw, 3.375rem);
+  --fs-h3: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --fs-body: clamp(1rem, 0.96rem + 0.15vw, 1.0625rem);
+  --fs-control: 1rem;
+  --fs-meta: 0.875rem;
+
+  /* Spacing scale: 4 8 12 16 24 32 48 64 80 112 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 80px;
+  --s-10: 112px;
+
+  --section-pad: clamp(52px, 3.6vw + 36px, 88px);
+
+  /* Layout */
+  --max: 1312px;
+  --gutter: 20px;
+  --header-h: 64px;
+
+  /* Shape */
+  --r-control: 12px;
+  --r-card: 16px;
+  --r-surface: 24px;
+
+  /* Elevation (light surfaces only) */
+  --shadow-card: 0 1px 2px rgb(10 11 30 / 0.06), 0 8px 24px -12px rgb(10 11 30 / 0.18);
+  --shadow-raised: 0 18px 48px -16px rgb(0 2 34 / 0.55);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur-base: 220ms;
+
+  /* Layers */
+  --z-scene: 1;
+  --z-header: 40;
+  --z-panel: 50;
+}
+
+@media (max-width: 374px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 40px;
+    --header-h: 80px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 48px;
+  }
+}
+@media (min-width: 1440px) {
+  :root {
+    --gutter: 64px;
+  }
+}

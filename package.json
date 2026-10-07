@@ -1,0 +1,40 @@
+{
+  "name": "zomzey-signal-atlas",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ZOMZEY homepage contest prototype — The Living Opportunity Network / Signal Atlas",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc -b --pretty",
+    "lint": "eslint .",
+    "images": "node scripts/prepare-images.mjs",
+    "test:e2e": "python3 .claude/skills/webapp-testing/scripts/with_server.py --server 'npm run preview' --port 4173 -- .venv/bin/python -I tests/journeys.py",
+    "export": "python3 .claude/skills/webapp-testing/scripts/with_server.py --server 'npm run preview' --port 4173 -- .venv/bin/python -I scripts/export_mockups.py"
+  },
+  "dependencies": {
+    "@fontsource-variable/instrument-sans": "5.3.0",
+    "gsap": "3.15.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@types/node": "^22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "axe-core": "^4.11.0",
+    "eslint": "9.39.5",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.13.0",
+    "sharp": "0.35.5",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1",
+    "vite": "8.3.3"
+  }
+}

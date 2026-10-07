@@ -1,0 +1,30 @@
+@font-face {
+  font-family: 'Instrument Sans Variable';
+  font-weight: 400 700;
+  src: url('../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2') format('woff2-variations');
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 2400px; height: 1600px; }
+body {
+  font-family: 'Instrument Sans Variable', system-ui, sans-serif;
+  background: #000222;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+body.paper { background: #fafaf8; color: #0a0b1e; }
+.board { position: relative; width: 2400px; height: 1600px; padding: 64px 80px; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 64px; }
+.caption { color: #1fa9ff; font-size: 20px; font-weight: 620; }
+.paper .caption { color: #0065a8; }
+.title { margin-top: 8px; font-size: 52px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 650; }
+.lede { max-width: 46em; color: #b4bdd4; font-size: 20px; line-height: 1.5; }
+.paper .lede { color: #5a5c72; }
+.shot { display: block; border-radius: 18px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16), 0 30px 60px -30px rgb(0 0 0 / 0.6); object-fit: cover; object-position: top center; background: #101437; }
+.paper .shot { box-shadow: 0 0 0 1px rgb(10 11 30 / 0.12), 0 24px 48px -28px rgb(10 11 30 / 0.45); }
+.label { font-size: 17px; font-weight: 620; }
+.note { color: #b4bdd4; font-size: 16px; line-height: 1.45; }
+.paper .note { color: #5a5c72; }
+.dot { display: inline-block; width: 8px; height: 10px; border-radius: 50%; background: #1fa9ff; margin-right: 10px; vertical-align: 1px; }
+.foot { position: absolute; left: 80px; right: 80px; bottom: 36px; display: flex; justify-content: space-between; color: #b4bdd4; font-size: 15px; }
+.paper .foot { color: #5a5c72; }

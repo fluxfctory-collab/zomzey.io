@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-GB"><head><meta charset="utf-8"><title>Desktop concept</title><link rel="stylesheet" href="board.css">
+<style>
+  .main { display: grid; grid-template-columns: 1520px 1fr; gap: 48px; margin-top: 44px; }
+  .hero { width: 1520px; height: 921px; } /* crop to the opening itself (873 of 900px) */
+  .responsive { display: flex; gap: 28px; margin-top: 36px; align-items: flex-end; }
+  .responsive figure { display: grid; gap: 10px; }
+  .r1280 { width: 432px; height: 270px; } .r1024 { width: 360px; height: 270px; } .r768 { width: 202px; height: 270px; }
+  .side { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
+  .full { width: 300px; height: auto; object-fit: contain; }
+  .points { display: grid; gap: 28px; }
+  .points p.label { margin-bottom: 6px; }
+</style></head>
+<body><div class="board">
+  <div class="head">
+    <div><p class="caption">Desktop concept</p><h1 class="title">The living opportunity network</h1></div>
+    <p class="lede">The dotted wordmark becomes a network. One project connects to a creator, a shop and a community around a calm, central message that is never covered.</p>
+  </div>
+  <div class="main">
+    <div>
+      <img class="shot hero" src="../../exports/ZOMZEY-desktop-hero-1440@2x.png" alt="">
+      <div class="responsive">
+        <figure><img class="shot r1280" src="../../exports/states/responsive-1280.png" alt=""><figcaption class="note">1280: same perimeter composition</figcaption></figure>
+        <figure><img class="shot r1024" src="../../exports/states/responsive-1024.png" alt=""><figcaption class="note">1024: adjacent compact scene</figcaption></figure>
+        <figure><img class="shot r768" src="../../exports/states/responsive-768.png" alt=""><figcaption class="note">768: tablet story</figcaption></figure>
+      </div>
+    </div>
+    <div class="side">
+      <figure style="display:grid;gap:10px"><img class="shot full" src="../../exports/ZOMZEY-desktop-full-1440.png" alt=""><figcaption class="note">Full homepage, 1440px</figcaption></figure>
+      <div class="points">
+        <div><p class="label"><span class="dot"></span>Message-safe centre</p><p class="note">Headline, description and both intent actions sit in a reserved column. Routes run behind the cards.</p></div>
+        <div><p class="label"><span class="dot"></span>Physical and digital reach</p><p class="note">A reviewer, a bookshop and a reading group show reach beyond creators.</p></div>
+        <div><p class="label"><span class="dot"></span>Labelled examples</p><p class="note">Illustrative connection, example profiles and an illustrative workflow. No invented totals or testimonials.</p></div>
+        <div><p class="label"><span class="dot"></span>Chapters, not cards</p><p class="note">Opening, relationship stories, a transit-line process, a working explorer, a trust record and two closing routes.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>ZOMZEY homepage concept prototype</span><span>Captured from the running prototype at 1440 × 900</span></div>
+</div></body></html>

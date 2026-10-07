@@ -1,0 +1,670 @@
+/* =========================================================
+   Opening — the living opportunity network
+   ========================================================= */
+.hero {
+  position: relative;
+  background: var(--navy);
+  color: var(--text-on-dark);
+  overflow: clip;
+}
+
+/* ---------- Message (shared by every layout) ---------- */
+.hero__title {
+  font-size: var(--fs-h1);
+  line-height: 1.03;
+  letter-spacing: -0.042em;
+  word-spacing: 0.07em;
+  font-weight: 660;
+}
+
+/* The full stop becomes a signal point: an oval like the wordmark's dots.
+   An empty inline-block's bottom edge sits on the baseline, exactly like a period.
+   A visually hidden "." keeps the sentence intact for assistive technology. */
+.hero__stop {
+  display: inline-block;
+  width: 0.15em;
+  height: 0.19em;
+  margin-left: 0.045em;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.hero__lede {
+  margin-top: 20px;
+  max-width: 30em;
+  color: var(--muted-on-dark);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.intent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.hero__pricing {
+  margin-top: 16px;
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+}
+
+.hero__pricing .text-link {
+  color: var(--text-on-dark);
+}
+
+/* ---------- Scenario control ---------- */
+.scenario-control {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--control-line-dark);
+  border-radius: 14px;
+}
+
+.scenario-control__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted-on-dark);
+  font-size: 0.9375rem;
+  font-weight: 540;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.scenario-control__option:hover {
+  color: var(--text-on-dark);
+  background: rgb(255 255 255 / 0.06);
+}
+
+.scenario-control__option[aria-pressed='true'] {
+  background: var(--surface-dark-2);
+  color: var(--text-on-dark);
+  font-weight: 620;
+}
+
+.scenario-control__option[aria-pressed='true']::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+@media (pointer: coarse) {
+  .scenario-control__option {
+    min-height: 44px;
+  }
+}
+
+/* Phones: four equal options in one row, never an orphaned option */
+@media (max-width: 599px) {
+  .scenario-control {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+  }
+  .scenario-control__option {
+    justify-content: center;
+    padding: 0 4px;
+  }
+}
+
+@media (max-width: 419px) {
+  .scenario-control__option {
+    font-size: 0.875rem;
+  }
+  /* The filled background marks the selection where the dot would not fit */
+  .scenario-control__option[aria-pressed='true']::before {
+    display: none;
+  }
+}
+
+/* =========================================================
+   Perimeter scene (≥ 1280px)
+   ========================================================= */
+.hero[data-layout='perimeter'] .hero__container {
+  padding-block: 20px 32px;
+}
+
+.scene {
+  position: relative;
+}
+
+.scene__routes,
+.scene__ports {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.scene__routes {
+  z-index: 0;
+}
+
+.scene__ports {
+  z-index: 2;
+}
+
+.scene__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(236px, 1fr) minmax(600px, 720px) minmax(236px, 1fr);
+  grid-template-rows: 72px auto auto auto;
+  grid-template-areas:
+    'tl . tr'
+    'tl msg tr'
+    'bl msg br'
+    'bl band br';
+  column-gap: 40px;
+}
+
+.scene__message {
+  grid-area: msg;
+  justify-self: center;
+  align-self: start;
+  width: 100%;
+  max-width: 720px;
+  padding-top: 8px;
+}
+
+.scene__message .hero__message {
+  text-align: center;
+}
+
+.scene__message .hero__line {
+  display: block;
+}
+
+.scene__message .hero__lede {
+  margin-inline: auto;
+}
+
+.scene__message .intent-actions {
+  justify-content: center;
+}
+
+.scene__band {
+  grid-area: band;
+  justify-self: center;
+  align-self: end;
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+  margin-top: 32px;
+}
+
+.scene__band-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Route layer */
+.scene__dots ellipse {
+  fill: var(--muted-on-dark);
+}
+
+.route {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.route--idle {
+  stroke: var(--route-idle);
+  stroke-width: 3;
+  stroke-dasharray: 0 9;
+}
+
+.route--active {
+  stroke: var(--route-active);
+  stroke-width: 4.2;
+  stroke-dasharray: 0 9;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.route--active[data-on='true'] {
+  opacity: 1;
+}
+
+.route-mask {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.route-runner {
+  fill: var(--white);
+  opacity: 0;
+}
+
+.port {
+  fill: var(--navy);
+  stroke: var(--control-line-dark);
+  stroke-width: 2;
+  transition:
+    fill var(--dur-fast) var(--ease-out),
+    stroke var(--dur-fast) var(--ease-out);
+}
+
+.port[data-on='true'] {
+  fill: var(--signal);
+  stroke: var(--navy);
+  stroke-width: 2.5;
+}
+
+.port--source {
+  fill: var(--signal);
+  stroke: var(--navy);
+}
+
+/* ---------- Perimeter entities ---------- */
+.node {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  border-radius: var(--r-card);
+  /* transform is reserved for GSAP; only the highlight ring transitions in CSS */
+  transition: box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.node:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
+}
+
+.node__text {
+  display: grid;
+  gap: 3px;
+}
+
+.node__name {
+  font-size: 1.0625rem;
+  font-weight: 620;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.node__meta {
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+}
+
+.node[data-active='true'] {
+  box-shadow: 0 0 0 2px var(--signal);
+}
+
+/* Project ticket — upper left */
+.node--ticket {
+  grid-area: tl;
+  align-self: start;
+  justify-self: start;
+  width: 216px;
+  overflow: hidden;
+  background: var(--surface-dark);
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+  transform: rotate(-1.5deg);
+}
+
+.node--ticket[data-active='true'] {
+  box-shadow: inset 0 0 0 1px var(--line-dark), 0 0 0 2px var(--signal);
+}
+
+.node--ticket .node__photo {
+  display: block;
+  height: 92px;
+}
+
+.node__perforation {
+  position: relative;
+  display: block;
+  height: 0;
+  margin-inline: 14px;
+  border-top: 1.5px dashed var(--line-dark);
+}
+
+.node__perforation::before,
+.node__perforation::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--navy);
+}
+
+.node__perforation::before {
+  left: -23px;
+}
+
+.node__perforation::after {
+  right: -23px;
+}
+
+.node--ticket .node__text {
+  padding: 14px 16px 16px;
+}
+
+.node--ticket .node__meta {
+  min-height: 2.8em;
+}
+
+/* Reach portrait — upper right */
+.node--portrait {
+  grid-area: tr;
+  align-self: start;
+  justify-self: end;
+  width: 196px;
+  margin-top: 36px;
+  padding: 0 0 4px;
+  border-radius: 24px;
+}
+
+.node--portrait .node__photo {
+  display: block;
+  width: 148px;
+  height: 184px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line-dark);
+}
+
+.node--portrait .node__text {
+  margin-top: 14px;
+  padding-inline: 4px;
+}
+
+.node--portrait[data-active='true'] {
+  box-shadow: none;
+}
+
+.node--portrait[data-active='true'] .node__photo {
+  box-shadow:
+    0 0 0 3px var(--navy),
+    0 0 0 5px var(--signal);
+}
+
+/* Place postcard — lower left */
+.node--postcard {
+  grid-area: bl;
+  align-self: end;
+  justify-self: start;
+  width: min(252px, 100%);
+  padding: 10px 10px 16px;
+  background: var(--paper);
+  color: var(--ink);
+  transform: rotate(1.2deg);
+}
+
+.node--postcard .node__photo {
+  display: block;
+  height: 148px;
+  border-radius: 10px;
+}
+
+.node--postcard .node__text {
+  padding: 12px 6px 0;
+}
+
+.node--postcard .node__meta {
+  color: var(--muted-on-light);
+}
+
+.node--postcard .role--hub::before,
+.node--postcard .role--community::before {
+  box-shadow: 0 0 0 1px rgb(10 11 30 / 0.4);
+}
+
+.node--postcard[data-active='true'] {
+  box-shadow: 0 0 0 2px var(--navy), 0 0 0 4px var(--signal);
+}
+
+/* Community mini-card — lower right */
+.node--mini {
+  grid-area: br;
+  align-self: end;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(268px, 100%);
+  padding: 12px;
+  background: var(--surface-dark);
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+}
+
+.node--mini[data-active='true'] {
+  box-shadow: inset 0 0 0 1px var(--line-dark), 0 0 0 2px var(--signal);
+}
+
+.node--mini .node__photo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+}
+
+/* ---------- Detail area ---------- */
+.scene-detail {
+  position: relative;
+  /* Reserves the route row plus two lines, so switching scenarios never shifts the page. */
+  min-height: 102px;
+  padding: 12px 56px 12px 18px;
+  border: 1px solid var(--line-dark);
+  border-radius: 14px;
+  background: rgb(16 20 55 / 0.72);
+  text-align: left;
+}
+
+.scene-detail__route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text-on-dark);
+}
+
+.scene-detail__line {
+  flex: 0 0 40px;
+  height: 4px;
+  background-image: radial-gradient(circle, var(--signal) 1.6px, transparent 2px);
+  background-size: 9px 4px;
+  background-position: left center;
+}
+
+.scene-detail__text {
+  margin-top: 6px;
+  color: var(--muted-on-dark);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.scene-detail__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* =========================================================
+   Stacked / adjacent layouts (< 1280px)
+   ========================================================= */
+.hero__stack {
+  display: grid;
+  gap: 36px;
+  padding-block: 32px 48px;
+}
+
+.hero__stack .intent-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.hero__stack .intent-actions .button {
+  white-space: normal;
+}
+
+.hero__story-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+@media (min-width: 600px) {
+  .hero__stack .intent-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero__stack {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+    align-items: center;
+    gap: 48px;
+    padding-block: 56px 72px;
+  }
+  .hero__stack .intent-actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 380px;
+  }
+}
+
+/* Vertical relationship story */
+.vstory {
+  --rail-x: 34px;
+  padding: 16px;
+  border: 1px solid var(--line-dark);
+  border-radius: 20px;
+  background: var(--surface-dark);
+}
+
+.vstory__project {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vstory__project-photo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+}
+
+.vstory__project-name {
+  margin-top: 2px;
+  font-size: 1.0625rem;
+  font-weight: 620;
+  line-height: 1.25;
+}
+
+.vstory__meta {
+  color: var(--muted-on-dark);
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+}
+
+.vstory__steps {
+  margin-top: 4px;
+}
+
+.vstory__step {
+  position: relative;
+  padding-top: 18px;
+}
+
+/* Dotted rail segment from the previous item down to this participant */
+.vstory__step::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--rail-x) - 2px);
+  top: -4px;
+  height: 50px;
+  width: 4px;
+  background-image: radial-gradient(circle, var(--route-idle) 1.5px, transparent 1.9px);
+  background-size: 4px 9px;
+}
+
+.vstory__step[data-on='true']::before {
+  background-image: radial-gradient(circle, var(--signal) 1.8px, transparent 2.2px);
+}
+
+.vstory__node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 64px;
+  padding: 4px 8px 4px 6px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.vstory__node:hover {
+  background: rgb(255 255 255 / 0.05);
+}
+
+.vstory__photo {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line-dark);
+}
+
+.vstory__step[data-on='true'] .vstory__photo {
+  box-shadow:
+    0 0 0 2px var(--surface-dark),
+    0 0 0 4px var(--signal);
+}
+
+.vstory__text {
+  display: grid;
+  gap: 2px;
+}
+
+.vstory__name {
+  font-size: 1rem;
+  font-weight: 620;
+  line-height: 1.25;
+}
+
+.vstory__detail {
+  margin: 8px 0 4px 76px;
+  color: var(--muted-on-dark);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}

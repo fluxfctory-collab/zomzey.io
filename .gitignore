@@ -1,0 +1,9 @@
+node_modules
+dist
+.venv
+*.log
+.DS_Store
+tests/artifacts
+scripts/.cache
+__pycache__/
+*.pyc

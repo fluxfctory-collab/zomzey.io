@@ -1,0 +1,185 @@
+{
+  "source": "Open Images Dataset V7 (Google) — images listed by the dataset as CC BY 2.0; originals on Flickr. Downloaded from the dataset's public S3 mirror.",
+  "images": [
+    {
+      "slug": "book-pages",
+      "id": "4ffd4d6f3d12253b",
+      "subset": "test",
+      "focus": "45% 50%",
+      "alt": "Close-up of a paperback's pages fanned on a table",
+      "author": "' PaiO",
+      "title": "Libro",
+      "landing": "https://www.flickr.com/photos/bluefever/2547557832"
+    },
+    {
+      "slug": "reading-aloud",
+      "id": "b0670fed268da345",
+      "subset": "validation",
+      "focus": "50% 35%",
+      "alt": "A person reading aloud from a book between tall bookshelves",
+      "author": "Jim.landover3",
+      "title": "me reading a book",
+      "landing": "https://www.flickr.com/photos/jimlandover3/3657781806"
+    },
+    {
+      "slug": "reader-park",
+      "id": "8c0456e241bda30f",
+      "subset": "validation",
+      "focus": "62% 40%",
+      "alt": "A person lying on the grass, absorbed in a paperback",
+      "author": "Grant",
+      "title": "reading politics",
+      "landing": "https://www.flickr.com/photos/visual_dichotomy/4240056336"
+    },
+    {
+      "slug": "bookshop",
+      "id": "a09ff3a4b88d6f97",
+      "subset": "validation",
+      "focus": "60% 45%",
+      "alt": "A customer browsing tall wooden shelves in a second-hand bookshop",
+      "author": "David Mellis",
+      "title": "Last day in Davis square",
+      "landing": "https://www.flickr.com/photos/mellis/2373450535"
+    },
+    {
+      "slug": "reading-group",
+      "id": "801a22eb361e3623",
+      "subset": "test",
+      "focus": "45% 55%",
+      "alt": "Three adults leaning over open books together at a table",
+      "author": "Ronnie Macdonald",
+      "title": "Beijing 19",
+      "landing": "https://www.flickr.com/photos/ronmacphotos/4941706006"
+    },
+    {
+      "slug": "potter-hands",
+      "id": "b9947bfa672b8742",
+      "subset": "validation",
+      "focus": "50% 55%",
+      "alt": "Hands shaping a clay vase on a potter's wheel",
+      "author": "greckor",
+      "title": "IMG_0459",
+      "landing": "https://www.flickr.com/photos/gregcutler/1427768969"
+    },
+    {
+      "slug": "creator-desk",
+      "id": "00a36f96e31731c4",
+      "subset": "validation",
+      "focus": "40% 55%",
+      "alt": "A home desk set up with a studio microphone, monitor and lamp",
+      "author": "Johan Larsson",
+      "title": "Untitled",
+      "landing": "https://www.flickr.com/photos/johanl/8289365270"
+    },
+    {
+      "slug": "indie-shop",
+      "id": "3e7b262c786a139f",
+      "subset": "test",
+      "focus": "50% 45%",
+      "alt": "Colourful clothes and framed pictures on red walls in a small independent shop",
+      "author": "Lindsey Nicholson",
+      "title": "Vintage!",
+      "landing": "https://www.flickr.com/photos/linznicholson/4361464257"
+    },
+    {
+      "slug": "craft-market",
+      "id": "defc1ce61d5afdfb",
+      "subset": "test",
+      "focus": "50% 60%",
+      "alt": "Handmade clay pots laid out at a craft market",
+      "author": "LollyKnit",
+      "title": "Thai Pottery",
+      "landing": "https://www.flickr.com/photos/lollyknit/688514866"
+    },
+    {
+      "slug": "guitarist",
+      "id": "d419f0ef5d53ee43",
+      "subset": "validation",
+      "focus": "50% 35%",
+      "alt": "A musician playing acoustic guitar at a microphone",
+      "author": "Terry Johnston",
+      "title": "Sound Check",
+      "landing": "https://www.flickr.com/photos/powerbooktrance/457354973"
+    },
+    {
+      "slug": "home-studio",
+      "id": "def215709bcd2bd6",
+      "subset": "test",
+      "focus": "55% 50%",
+      "alt": "A home recording studio with keyboards, speakers and a laptop",
+      "author": "bkRiverdog",
+      "title": "Keys8",
+      "landing": "https://www.flickr.com/photos/riverdog/16558260/"
+    },
+    {
+      "slug": "small-venue",
+      "id": "9d1ccb1c2bbc0e50",
+      "subset": "test",
+      "focus": "50% 55%",
+      "alt": "An empty stage framed by red curtains",
+      "author": "bfishadow",
+      "title": "Red Stage",
+      "landing": "https://www.flickr.com/photos/bfishadow/3144319914"
+    },
+    {
+      "slug": "gig-crowd",
+      "id": "cc2054ffe6092c88",
+      "subset": "test",
+      "focus": "60% 50%",
+      "alt": "A crowd raising their hands under red stage light",
+      "author": "Samuel Breen",
+      "title": "Roses",
+      "landing": "https://www.flickr.com/photos/52188855@N05/8021257866"
+    },
+    {
+      "slug": "phone-app",
+      "id": "043f3655deab6e7c",
+      "subset": "validation",
+      "focus": "60% 50%",
+      "alt": "A hand holding a phone with an app open on screen",
+      "author": "David Goehring",
+      "title": "Doodle Jumper",
+      "landing": "https://www.flickr.com/photos/carbonnyc/4581311847"
+    },
+    {
+      "slug": "tech-podcast",
+      "id": "ff913093c0fb6898",
+      "subset": "test",
+      "focus": "40% 40%",
+      "alt": "A presenter speaking into a microphone beside a laptop",
+      "author": "Javier Leiva",
+      "title": "Los Content Curators | Presentación del libro",
+      "landing": "https://www.flickr.com/photos/catorze/11690374424"
+    },
+    {
+      "slug": "workshop",
+      "id": "e18f8379d3e272b5",
+      "subset": "validation",
+      "focus": "65% 35%",
+      "alt": "An educator leading a workshop for a group seated with laptops",
+      "author": "Eva Blue",
+      "title": "spice corps montreal 2",
+      "landing": "https://www.flickr.com/photos/evablue/5738800135"
+    },
+    {
+      "slug": "meetup",
+      "id": "1e471949af0ac2f5",
+      "subset": "test",
+      "focus": "45% 75%",
+      "alt": "Three people working together around a laptop",
+      "author": "corinnepw",
+      "title": "LadyHacks 2014",
+      "landing": "https://www.flickr.com/photos/oh_you/13042451783"
+    },
+    {
+      "slug": "agency-meeting",
+      "id": "5a6ba94604bb2cd0",
+      "subset": "test",
+      "focus": "40% 60%",
+      "alt": "People talking around a long table in a bright meeting room",
+      "author": "P.O. Arnäs",
+      "title": "Untitled",
+      "landing": "https://www.flickr.com/photos/dr_po/8958641373/"
+    }
+  ]
+}
