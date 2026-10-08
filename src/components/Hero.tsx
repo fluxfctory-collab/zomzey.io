@@ -1,141 +1,85 @@
-import { useCallback, useEffect, useState } from 'react'
-import { scenarioById, scenarios, type Intent, type ParticipantSlot, type ScenarioId } from '../data/content'
+import { useEffect, useState } from 'react'
+import type { Intent, ReachId } from '../data/content'
 import { links } from '../data/links'
-import { QUERIES, useMediaQuery } from '../lib/useMediaQuery'
-import { ConnectionScene, type SceneFocus } from './ConnectionScene'
-import { Icon } from './Icon'
-import { VerticalStory } from './VerticalStory'
+import { ReachWall } from './ReachWall'
 
 interface HeroProps {
   onIntent: (intent: Intent) => void
 }
 
+/**
+ * Opening — "Up in lights". The client's own positioning line names four kinds of reach;
+ * each word takes the colour of the LED scene that illustrates it on the wall beside it.
+ */
 export function Hero({ onIntent }: HeroProps) {
-  const isPerimeter = useMediaQuery(QUERIES.perimeter)
-  const [scenarioId, setScenarioId] = useState<ScenarioId>('books')
-  const [selected, setSelected] = useState<SceneFocus | null>(null)
-  const [preview, setPreview] = useState<SceneFocus | null>(null)
-  const scenario = scenarioById[scenarioId]
-  const active: SceneFocus = preview ?? selected ?? scenario.defaultSlot
+  const [tuned, setTuned] = useState<ReachId | null>(null)
 
-
-  // Tapping or clicking anywhere outside the scene's nodes/detail clears a pinned selection.
+  // Clicking or tapping anywhere outside the wall returns it to all four scenes.
   useEffect(() => {
-    if (!selected) return
+    if (!tuned) return
     const onPointerDown = (event: PointerEvent) => {
-      const target = event.target as Element | null
-      if (target?.closest('.node, .vstory__node, .scene-detail, .scenario-control')) return
-      setSelected(null)
+      if ((event.target as Element | null)?.closest('.reach-wall')) return
+      setTuned(null)
     }
     document.addEventListener('pointerdown', onPointerDown)
     return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [selected])
-
-  const changeScenario = useCallback((id: ScenarioId) => {
-    setScenarioId(id)
-    setSelected(null)
-    setPreview(null)
-  }, [])
-
-  const selectSlot = useCallback((slot: SceneFocus) => {
-    setSelected((current) => (current === slot ? null : slot))
-  }, [])
-
-  const message = (
-    <div className="hero__message">
-      <h1 className="hero__title" id="hero-title">
-        <span className="hero__line">Make the</span> <span className="hero__line">next connection</span>{' '}
-        <span className="hero__line">
-          count
-          <span className="hero__stop" aria-hidden="true" />
-          <span className="visually-hidden">.</span>
-        </span>
-      </h1>
-      <p className="hero__lede">Bring your project to the people, places and communities that can help it grow.</p>
-      <div className="intent-actions">
-        <a className="button button--primary button--lg" href="#explore" onClick={() => onIntent('promote')}>
-          I want to promote something
-        </a>
-        <a className="button button--secondary-dark button--lg" href="#explore" onClick={() => onIntent('earn')}>
-          I want to earn from my audience
-        </a>
-      </div>
-      <p className="hero__pricing">
-        Free account options available.{' '}
-        <a href={links.pricing} className="text-link">
-          See pricing
-        </a>{' '}
-        for fees and agency plans.
-      </p>
-    </div>
-  )
-
-  const control = <ScenarioControl value={scenarioId} onChange={changeScenario} />
-
-  const detailParticipant = scenario.participants.find((p) => p.slot === active)
-  const detail = (
-    <div className="scene-detail" data-pinned={selected ? 'true' : 'false'}>
-      <p className="scene-detail__route">
-        <span>{scenario.project.kind}</span>
-        <span className="scene-detail__line" aria-hidden="true" />
-        <span>{detailParticipant ? detailParticipant.name : 'Three example routes'}</span>
-      </p>
-      <p className="scene-detail__text">{detailParticipant ? detailParticipant.detail : scenario.summary}</p>
-      {selected ? (
-        <button type="button" className="icon-button icon-button--small scene-detail__close" onClick={() => setSelected(null)}>
-          <Icon name="close" size={18} />
-          <span className="visually-hidden">Clear selected connection</span>
-        </button>
-      ) : null}
-    </div>
-  )
+  }, [tuned])
 
   return (
-    <section className="hero on-dark" aria-labelledby="hero-title" data-layout={isPerimeter ? 'perimeter' : 'stacked'}>
-      <div className="container hero__container">
-        {isPerimeter ? (
-          <ConnectionScene
-            scenario={scenario}
-            active={active}
-            selected={selected}
-            onPreview={setPreview}
-            onSelect={selectSlot}
-            message={message}
-            band={
-              <>
-                <div className="scene__band-row">
-                  <span className="example-tag">Illustrative connection</span>
-                  {control}
-                </div>
-                {detail}
-              </>
-            }
-          />
-        ) : (
-          <div className="hero__stack">
-            {message}
-            <div className="hero__story">
-              <div className="hero__story-head">
-                <span className="example-tag">Illustrative connection</span>
-                {control}
-              </div>
-              <VerticalStory scenario={scenario} active={active} onSelect={(slot: ParticipantSlot) => selectSlot(slot)} />
-            </div>
+    <section className="hero on-dark" aria-labelledby="hero-title" data-tuned={tuned ?? undefined}>
+      <div className="container hero__grid">
+        <div className="hero__message">
+          <p className="hero__eyebrow">
+            <span className="hero__eyebrow-dots" aria-hidden="true" />
+            The opportunity-led platform
+          </p>
+          {/* One text block with forced breaks (not block-level lines), so the whole
+              headline is a single paint and a single largest-contentful-paint candidate. */}
+          <h1 className="hero__title" id="hero-title">
+            <span className="hero__line">Promote through</span> <br />
+            <span className="hero__line">people with</span> <br />
+            <span className="hero__line">
+              <span className="hero__word" data-reach="followers">
+                followers,
+              </span>{' '}
+              <span className="hero__word" data-reach="footfall">
+                footfall,
+              </span>
+            </span>{' '}
+            <br />
+            <span className="hero__line">
+              <span className="hero__word" data-reach="fans">
+                fans
+              </span>{' '}
+              &amp;{' '}
+              <span className="hero__word" data-reach="audience">
+                audience.
+              </span>
+            </span>
+          </h1>
+          <p className="hero__lede">
+            More than an influencer platform: ZOMZEY connects your project with creators, shops, venues, musicians,
+            communities and agencies.
+          </p>
+          <div className="intent-actions">
+            <a className="button button--primary button--lg" href="#explore" onClick={() => onIntent('promote')}>
+              I want to promote something
+            </a>
+            <a className="button button--secondary-dark button--lg" href="#explore" onClick={() => onIntent('earn')}>
+              I want to earn from my audience
+            </a>
           </div>
-        )}
+          <p className="hero__pricing">
+            Free account options available.{' '}
+            <a href={links.pricing} className="text-link">
+              See pricing
+            </a>{' '}
+            for fees and agency plans.
+          </p>
+        </div>
+
+        <ReachWall tuned={tuned} onTune={setTuned} />
       </div>
     </section>
-  )
-}
-
-function ScenarioControl({ value, onChange }: { value: ScenarioId; onChange: (id: ScenarioId) => void }) {
-  return (
-    <div className="scenario-control" role="group" aria-label="Example scene">
-      {scenarios.map((s) => (
-        <button key={s.id} type="button" className="scenario-control__option" aria-pressed={value === s.id} onClick={() => onChange(s.id)}>
-          {s.label}
-        </button>
-      ))}
-    </div>
   )
 }

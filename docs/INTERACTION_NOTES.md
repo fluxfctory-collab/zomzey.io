@@ -1,15 +1,14 @@
 # Interaction notes
 
-Every movement either explains a connection or confirms a change the visitor made. Board: `exports/ZOMZEY-board-04-interactions.png`; individual states: `exports/states/`.
+Every movement either switches the LED wall on, explains a kind of reach or confirms a change the visitor made. Boards: `exports/ZOMZEY-board-01-opening.png` (opening) and `exports/ZOMZEY-board-03-visual-system.png` (scene states); individual states: `exports/states/`.
 
 | Interaction | Trigger | Response | Purpose | Touch alternative | Reduced motion |
 | --- | --- | --- | --- | --- | --- |
-| Opening reveal | First load, ≥1280px | Four entities settle in (y 14 → 0, staggered) while one example route draws behind them with one travelling point. 0.85s, once | Shows that the illustrated participants are related | Not used on phones: the vertical story is static | Scene is complete at once. If animation code arrives after 350ms, the reveal is skipped so visible content never re-hides |
-| Node preview | Hover (mouse) or keyboard focus on a participant | Its dotted route turns blue, its port fills, and the detail area explains what it could offer (160ms) | Ties a person or place to the project | Tap selects instead (below) | Immediate |
-| Node selection | Click or tap a participant | Pinned highlight (`aria-pressed`) plus a close control. Clicking or tapping elsewhere clears it | Lets visitors compare routes | Same | Immediate |
-| Project selection | Click the project ticket | All three routes light | Shows the full set of example routes | Same | Immediate |
-| Scenario change | Books, Products, Music or Apps | Photos, labels, details and routes change together. Content fades over 260ms and the active route redraws. Height is reserved, so nothing below moves | Shows the same platform working for a different use case | Phones: four equal options; the project and steps fade over 240ms | Immediate swap |
-| Vertical story step | Tap or click a participant step (< 1280px) | Step expands its example (`aria-expanded`); the rail segment above it turns blue | Readable alternative to the perimeter network | Primary method | Immediate |
+| Wall switches on | First load | Each LED screen fades in and resolves from dots to its clear centre (1% → 58%) over 1.1s, 120ms apart; each spill glows in 280ms later. Once only, pure CSS | Ties the wall to the dot-matrix wordmark: the logo "lights up" | Same | Wall is complete at first paint (no animation is declared) |
+| Scene hover | Mouse over a scene | Its clear centre widens from 58% to 72% (480ms) | Invites selection without hiding anything | Not used | Immediate |
+| Scene selection | Click, tap, Enter or Space on a scene | Pressed state (`aria-pressed`). The scene resolves fully (96%) and gains a coloured ring on its caption; the other three fall back to dots at 50%; their spills dim. The matching headline word gets a dotted underline. The detail line explains one hypothetical example and links to the matching ZOMZEY page | Explains what each kind of reach could do for a project | Primary method | Immediate |
+| Return to all four | The same scene again, the ✕ control, or a click/tap anywhere outside the wall | All four scenes on; focus goes back to the scene after ✕ | Easy, predictable exit | Same | Immediate |
+| Detail line | Any selection change | Text changes in a polite live region. Height is reserved for the longest example at every width, so nothing below moves | Announces the example; no layout shift | Same | Immediate |
 | Intent actions | "I want to promote something" / "I want to earn from my audience" | Stores a local mode (this tab only), sets the explorer dataset and navigates to `#explore` | Starts discovery from the visitor's side of the relationship | Same | Plain anchor jump (no smooth scroll) |
 | Explorer intent switch | Promote something / Earn from my audience | Heading, label, placeholder, categories and data change. Category and query reset, and "Where" filters persist. Results fade in over 240ms | Prevents empty, incompatible filter combinations | Two equal halves | Immediate |
 | Search | Enter, or the Search button | Filters the local example data. The count updates in a polite live region ("Showing 1 of 6 example profiles for “bookshop”") | A real first action with honest counts | Search keyboard (`enterkeyhint`) | Immediate |
@@ -25,13 +24,13 @@ Every movement either explains a connection or confirms a change the visitor mad
 
 ## Focus and keyboard
 
-- A skip link is the first stop and moves focus to `<main>`. Every control is a native button, link, input or radio.
-- Visible focus is a 2px outline with a 3px offset: `#1FA9FF` on navy and `#0065A8` on paper. The search field shows focus on its wrapper.
+- A skip link is the first stop and moves focus to `<main>`. Every control is a native button, link, input or radio. The four scenes are toggle buttons named by their caption (for example "Followers" and "Creators and influencers"); their photographs are decorative.
+- Visible focus is a 2px outline with a 3px offset (4px on scenes): `#1FA9FF` on navy and `#0065A8` on paper. The search field shows focus on its wrapper.
 - Dialogs use the native `<dialog>`, so focus is contained and the page behind is inert. Escape closes them and focus returns to the opener.
 - `scroll-padding-top` keeps anchored headings and focused elements clear of the sticky header.
 
 ## Layout rationale
 
-- **Opening:** the message sits in a reserved centre column, so the original composition never competes with reading or acting. The perimeter shows breadth (a creator, a shop, a community) and the routes show the relationship. Lines are an SVG layer behind real HTML, measured from layout, so they follow the grid at any width.
-- **Different widths:** the perimeter appears only where it fits (≥1280px). Narrower screens get a deliberate adjacent or vertical story rather than a shrunk graph.
-- **Sections:** each chapter has its own job and layout (editorial story, transit-line process, working explorer, inset record, two meeting routes). The page is not a repeated card stack. The dotted route motif is the thread between them.
+- **Opening:** the promise and the picture of it sit side by side. The message keeps a fixed four-line shape sized to its column; the wall carries the colour and the imagery, and the two never overlap (checked at 1920, 1440 and 1280 with 24px clearance). At 1440 × 900 the whole opening, including the detail line, fits the first screen.
+- **Different widths:** a two-by-two pinwheel beside the message from 1200px, one row of four below the message from 760px, and two staggered columns on phones, where the message and both actions come first.
+- **Sections:** each chapter has its own job and layout (editorial story, transit-line process, working explorer, inset record, two meeting routes). The page is not a repeated card stack. The dot is the thread between them.

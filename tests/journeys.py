@@ -95,6 +95,17 @@ def search(page, text, via="enter"):
         explorer(page).get_by_role("button", name="Search", exact=True).click()
 
 
+def line_fit(page):
+    """Rendered width of each headline line against the message column it must fit."""
+    return page.evaluate(
+        """() => {
+            const col = document.querySelector('.hero__message').getBoundingClientRect().width
+            const widths = [...document.querySelectorAll('.hero__line')].map(l => { const r = document.createRange(); r.selectNodeContents(l); return r.getBoundingClientRect().width })
+            return { col: Math.round(col), widths: widths.map(Math.round), over: widths.filter(x => x > col + 1).length, size: getComputedStyle(document.querySelector('.hero__title')).fontSize }
+        }"""
+    )
+
+
 def rects_intersect(a, b, pad=0):
     return not (a["x"] + a["width"] + pad <= b["x"] or b["x"] + b["width"] + pad <= a["x"] or a["y"] + a["height"] + pad <= b["y"] or b["y"] + b["height"] + pad <= a["y"])
 
@@ -126,25 +137,27 @@ with sync_playwright() as pw:
         ensure(page.evaluate("document.activeElement.id") == "main", "skip link did not move focus to main")
         return "h1 = " + page.locator("h1").inner_text().replace("\n", " ")
 
-    @check("J03", "Headline, description and intent actions never collide with perimeter cards (1920/1440/1280)")
+    @check("J03", "Opening (1920/1440/1280): headline fits its column, message never overlaps the LED wall, both actions above the fold")
     def _():
         out = []
         for w, h in [(1920, 1080), (1440, 900), (1280, 800)]:
             c, p = new_page(browser, w, h)
-            p.wait_for_timeout(1300)
+            p.wait_for_timeout(1600)
             protected = [p.locator(s).bounding_box() for s in [".hero__title", ".hero__lede", ".intent-actions .button >> nth=0", ".intent-actions .button >> nth=1", ".hero__pricing"]]
-            cards = [p.locator(".node").nth(i).bounding_box() for i in range(4)]
+            screens = [p.locator(".led").nth(i).bounding_box() for i in range(4)]
             for a in protected:
-                for b in cards:
-                    ensure(not rects_intersect(a, b, 16), f"collision at {w}px")
+                for b in screens:
+                    ensure(not rects_intersect(a, b, 24), f"collision at {w}px")
             buttons = p.locator(".intent-actions .button")
             for i in range(2):
                 bb = buttons.nth(i).bounding_box()
                 ensure(bb["y"] + bb["height"] <= h, f"intent action {i} below the fold at {w}x{h}")
-            ensure(p.locator(".route--active").count() == 3 and p.locator(".route--idle").count() == 3, "routes missing")
-            dots = p.locator(".scene__dots ellipse").count()
-            ensure(dots <= 180, f"{dots} decorative dots exceeds 180")
-            out.append(f"{w}px ok ({dots} dots)")
+            ensure(p.locator(".hero__line").count() == 4, "expected four headline lines")
+            fit = line_fit(p)
+            ensure(fit["over"] == 0, f"headline line wider than its column at {w}px: {fit}")
+            words = p.locator(".led__word").all_inner_texts()
+            ensure(words == ["Followers", "Footfall", "Fans", "Audience"], words)
+            out.append(f"{w}px ok (H1 {fit['size']}, widest line {max(fit['widths'])}/{fit['col']}px)")
             c.close()
         return ", ".join(out)
 
@@ -189,52 +202,61 @@ with sync_playwright() as pw:
         ex.get_by_role("button", name="Promote something").click()
         return "category → All, query cleared, dataset swapped"
 
-    @check("J07", "Each scenario swaps images, labels and routes together without layout shift")
+    @check("J07", "Selecting each LED scene: pressed state, example and verified link, matching headline word lit, others muted, no layout shift")
     def _():
         fresh(page)
         page.evaluate("scrollTo(0,0)")
         expected = {
-            "Books": ("Book launch", ["Book reviewer", "Independent bookshop", "Reading community"], "book-pages"),
-            "Products": ("Product launch", ["Home-studio creator", "Independent retailer", "Makers’ market"], "potter-hands"),
-            "Music": ("New release", ["Music creator", "Small venue", "Fan community"], "guitarist"),
-            "Apps": ("App launch", ["Tech reviewer", "Workshop educator", "Niche community"], "phone-app"),
+            "Followers": ("followers", "A creator could review", "https://zomzey.io/what-is-an-influencer/"),
+            "Footfall": ("footfall", "A local shop or venue could", "https://zomzey.io/what-is-a-hub/"),
+            "Fans": ("fans", "A band or musician could", "https://zomzey.io/bands-singers-musicians/"),
+            "Audience": ("audience", "A club, community or agency could", "https://zomzey.io/agencies/"),
         }
-        heights = set()
-        main_top = []
-        for label, (kind, names, img) in expected.items():
-            page.locator(".scenario-control").get_by_role("button", name=label, exact=True).click()
-            page.wait_for_timeout(450)
-            ensure(page.locator(".scenario-control").get_by_role("button", name=label, exact=True).get_attribute("aria-pressed") == "true", "pressed state")
-            ensure(page.locator(".node--ticket .node__name").inner_text() == kind, f"{label}: project")
-            got = [page.locator(f'[data-node="{s}"] .node__name').inner_text() for s in ["reach", "place", "community"]]
-            ensure(got == names, f"{label}: {got}")
-            src = page.locator(".node--ticket img").get_attribute("src")
-            ensure(img in src, f"{label}: ticket image {src}")
-            detail = page.locator(".scene-detail__text").inner_text()
-            ensure(len(detail) > 20, "detail empty")
-            heights.add(page.evaluate("document.querySelector('.hero').offsetHeight"))
-            main_top.append(page.evaluate("document.querySelector('.reach').getBoundingClientRect().top + scrollY"))
-        ensure(len(set(main_top)) == 1, f"content below the hero moved between scenarios: {main_top}")
-        page.locator(".scenario-control").get_by_role("button", name="Books", exact=True).click()
-        return f"4 scenarios; hero height {heights}"
+        below = lambda: page.evaluate("document.querySelector('.reach').getBoundingClientRect().top + scrollY")
+        tops = [below()]
+        for word, (rid, phrase, href) in expected.items():
+            btn = page.locator(".led", has_text=word)
+            btn.click()
+            page.wait_for_timeout(300)
+            ensure(btn.get_attribute("aria-pressed") == "true", f"{word}: not pressed")
+            ensure(page.locator('.led[aria-pressed="true"]').count() == 1, f"{word}: more than one scene pressed")
+            text = page.locator(".reach-wall__text").inner_text()
+            ensure(phrase in text, f"{word}: detail reads {text!r}")
+            ensure(page.locator(".reach-wall__more").get_attribute("href") == href, f"{word}: wrong link")
+            ensure(page.locator(".hero").get_attribute("data-tuned") == rid, f"{word}: headline not linked")
+            deco = page.evaluate(f"getComputedStyle(document.querySelector('.hero__word[data-reach={rid}]')).textDecorationColor")
+            ensure(deco not in ("rgba(0, 0, 0, 0)", "transparent"), f"{word}: headline word not lit ({deco})")
+            muted = page.locator('.reach-wall__item[data-state="muted"]').count()
+            ensure(muted == 3, f"{word}: {muted} muted scenes")
+            tops.append(below())
+        page.locator(".led", has_text="Audience").click()
+        ensure(page.locator('.led[aria-pressed="true"]').count() == 0, "second click did not return to all four")
+        tops.append(below())
+        ensure(len(set(tops)) == 1, f"content below the opening moved: {tops}")
+        return "4 scenes; example, link and headline word follow the selection; 3 muted; toggles off; no shift"
 
-    @check("J08", "Node focus previews a route, click pins it, clicking elsewhere clears it")
+    @check("J08", "Scenes by keyboard (Enter/Space); clear control returns focus to the scene; clicking elsewhere clears")
     def _():
         fresh(page)
-        reach = page.locator('[data-node="reach"]')
-        reach.focus()
-        ensure("reviewer could read" in page.locator(".scene-detail__text").inner_text(), "focus did not update detail")
-        ensure(page.locator('.route--active[data-slot="reach"]').get_attribute("data-on") == "true", "route not highlighted")
-        reach.click()
-        ensure(reach.get_attribute("aria-pressed") == "true", "not pinned")
-        ensure(page.get_by_role("button", name="Clear selected connection").count() == 1, "no explicit close control")
+        fans = page.locator(".led", has_text="Fans")
+        fans.focus()
+        page.keyboard.press("Enter")
+        ensure(fans.get_attribute("aria-pressed") == "true", "Enter did not select")
+        page.keyboard.press("Space")
+        ensure(fans.get_attribute("aria-pressed") == "false", "Space did not toggle off")
+        page.keyboard.press("Space")
+        clear = page.get_by_role("button", name="Show all four scenes")
+        ensure(clear.count() == 1, "no explicit clear control")
+        clear.click()
+        ensure(page.locator('.led[aria-pressed="true"]').count() == 0, "clear control did not reset")
+        ensure(page.evaluate("document.activeElement.classList.contains('led') && document.activeElement.textContent.startsWith('Fans')"), "focus did not return to the scene")
+        page.locator(".led", has_text="Audience").click()
         page.locator(".hero__lede").click()
-        ensure(reach.get_attribute("aria-pressed") == "false", "click elsewhere did not clear")
-        page.locator('[data-node="project"]').click()
-        on = page.locator('.route--active[data-on="true"]').count()
-        ensure(on == 3, f"project should light all three routes, got {on}")
-        page.get_by_role("button", name="Clear selected connection").click()
-        return "preview → pin → dismiss; project lights 3 routes"
+        ensure(page.locator('.led[aria-pressed="true"]').count() == 0, "click elsewhere did not clear")
+        ensure(page.locator(".reach-wall__detail").get_attribute("aria-live") == "polite", "detail is not a polite live region")
+        name = page.locator(".led", has_text="Followers").evaluate("b => b.textContent.trim()")
+        ensure(name == "FollowersCreators and influencers", f"unexpected accessible text {name!r}")
+        return "Enter/Space toggle; clear → focus back on the scene; outside click; polite live detail"
 
     @check("J09", "Search (Enter and button), category, no results, and Clear filters")
     def _():
@@ -388,7 +410,7 @@ with sync_playwright() as pw:
     @check("J17", "Visible focus on representative controls")
     def _():
         fresh(page)
-        sels = [".explore__trigger", ".intent-actions .button", ".scenario-control__option", ".chip", ".reach__tab", ".pcard__action"]
+        sels = [".explore__trigger", ".intent-actions .button", ".led", ".chip", ".reach__tab", ".pcard__action"]
         out = []
         for s in sels:
             el = page.locator(s).first
@@ -452,41 +474,40 @@ with sync_playwright() as pw:
         c.close()
         return "11 links, Escape, section focus, Join"
 
-    @check("J21", "Touch: vertical story steps expand on tap; scenarios update the story (390)")
+    @check("J21", "Touch (390): opening fits 390×844, wall in two columns, tap selects a scene and tapping elsewhere clears")
     def _():
         c, p = new_page(browser, 390, 844, has_touch=True, is_mobile=True)
-        ensure(p.locator(".scene").count() == 0 and p.locator(".vstory").count() == 1, "mobile should use the vertical story, not the perimeter scene")
-        node = p.locator(".vstory__node", has_text="Book reviewer")
-        node.tap()
-        ensure(node.get_attribute("aria-expanded") == "true", "tap did not expand")
-        ensure(p.locator(".vstory").get_by_text("A reviewer could read an early copy").is_visible(), "detail not visible")
-        p.locator(".scenario-control").get_by_role("button", name="Products", exact=True).tap()
-        p.wait_for_timeout(300)
-        ensure(p.locator(".vstory__project-name").inner_text() == "Product launch", "story did not update")
-        names = p.locator(".vstory__name").all_inner_texts()
-        ensure(names == ["Home-studio creator", "Independent retailer", "Makers’ market"], names)
-        # Headline, description and both intent actions in the first 844px
         for s in [".hero__title", ".hero__lede", ".intent-actions .button >> nth=1"]:
             bb = p.locator(s).bounding_box()
             ensure(bb["y"] + bb["height"] <= 844, f"{s} below the fold")
+        cols = p.evaluate("getComputedStyle(document.querySelector('.reach-wall__grid')).gridTemplateColumns.split(' ').length")
+        ensure(cols == 2, f"expected two wall columns, got {cols}")
+        fit = line_fit(p)
+        ensure(fit["over"] == 0, f"headline wider than its column at 390: {fit}")
+        node = p.locator(".led", has_text="Footfall")
+        node.tap()
+        ensure(node.get_attribute("aria-pressed") == "true", "tap did not select")
+        ensure(p.locator(".reach-wall__detail").get_by_text("A local shop or venue could").is_visible(), "example not visible")
+        p.locator(".hero__title").tap()
+        ensure(node.get_attribute("aria-pressed") == "false", "tapping elsewhere did not clear")
         c.close()
-        return "tap expands; Products swaps project + 3 steps; opening fits 390×844"
+        return f"opening fits; two columns; tap selects and clears; H1 {fit['size']}"
 
-    @check("J22", "Reduced motion: complete static scene and process route immediately")
+    @check("J22", "Reduced motion: LED wall and process route complete immediately, nothing animates")
     def _():
         c, p = new_page(browser, 1440, 900, reduced_motion="reduce")
         p.wait_for_timeout(150)
-        op = p.evaluate("getComputedStyle(document.querySelector('.route--active[data-on=true]')).opacity")
-        ensure(op == "1", f"active route opacity {op}")
-        cards = p.evaluate("[...document.querySelectorAll('.node')].map(n => getComputedStyle(n).opacity)")
-        ensure(all(x == "1" for x in cards), cards)
+        leds = p.evaluate("[...document.querySelectorAll('.led')].map(n => [getComputedStyle(n).opacity, getComputedStyle(n).getPropertyValue('--clear').trim()])")
+        ensure(all(o == "1" and cl == "58%" for o, cl in leds), leds)
+        spill = p.evaluate("[...document.querySelectorAll('.led__spill')].map(n => getComputedStyle(n).opacity)")
+        ensure(all(x == "1" for x in spill), spill)
         p.locator("#how-it-works").scroll_into_view_if_needed()
         tf = p.evaluate("getComputedStyle(document.querySelector('.process__rail-fill')).transform")
         ensure(tf in ("none", "matrix(1, 0, 0, 1, 0, 0)"), f"rail fill transform {tf}")
         anims = p.evaluate("document.getAnimations().length")
         ensure(anims == 0, f"{anims} running animations")
         c.close()
-        return "routes, cards and process rail complete; 0 running animations"
+        return "4 scenes fully on at first paint; process rail complete; 0 animations"
 
     @check("J23", "No horizontal overflow at 1920, 1440, 1280, 1024, 768, 390 and 360")
     def _():
@@ -497,12 +518,12 @@ with sync_playwright() as pw:
             sw = p.evaluate("document.documentElement.scrollWidth")
             ensure(sw <= w, f"{w}px: scrollWidth {sw}")
             wide = p.evaluate(
-                f"[...document.querySelectorAll('main *, header *, footer *')].filter(e => {{ const r = e.getBoundingClientRect(); return r.width && (r.right > {w} + 1 || r.left < -1) && !e.closest('svg') && getComputedStyle(e).position !== 'fixed' }}).slice(0,5).map(e => e.className)"
+                f"[...document.querySelectorAll('main *, header *, footer *')].filter(e => {{ const r = e.getBoundingClientRect(); return r.width && (r.right > {w} + 1 || r.left < -1) && !e.closest('svg, .led__spill') && getComputedStyle(e).position !== 'fixed' }}).slice(0,5).map(e => e.className)"
             )
             ensure(not wide, f"{w}px: elements outside viewport {wide}")
             ensure(not p.errors, p.errors)
-            layout = p.evaluate("document.querySelector('.hero').dataset.layout")
-            out.append(f"{w}:{layout}")
+            cols = p.evaluate("getComputedStyle(document.querySelector('.reach-wall__grid')).gridTemplateColumns.split(' ').length")
+            out.append(f"{w}:{cols}-col wall")
             c.close()
         return ", ".join(out)
 
@@ -510,7 +531,7 @@ with sync_playwright() as pw:
     def _():
         c, p = new_page(browser, 390, 844, has_touch=True, is_mobile=True)
         sizes = p.evaluate(
-            """[...document.querySelectorAll('.button, .chip, .scenario-control__option, .segmented__option, .reach__tab, .vstory__node, .icon-button:not(.icon-button--small)')]
+            """[...document.querySelectorAll('.button, .chip, .led, .segmented__option, .reach__tab, .icon-button:not(.icon-button--small)')]
                .filter(e => e.offsetParent).map(e => ({c: e.className.split(' ')[0], h: Math.round(e.getBoundingClientRect().height), w: Math.round(e.getBoundingClientRect().width)}))"""
         )
         small = [s for s in sizes if s["h"] < 44 or s["w"] < 44]
@@ -555,16 +576,16 @@ with sync_playwright() as pw:
     @check("J27", "Reduced motion applies when the preference changes after load")
     def _():
         c, p = new_page(browser, 1440, 900)
-        p.wait_for_timeout(1500)
+        p.wait_for_timeout(1800)
         p.emulate_media(reduced_motion="reduce")
-        p.locator(".scenario-control").get_by_role("button", name="Apps", exact=True).click()
+        p.locator(".led", has_text="Fans").click()
         p.wait_for_timeout(60)
         running = p.evaluate("document.getAnimations().filter(a => a.playState === 'running').length")
-        inline = p.evaluate("[...document.querySelectorAll('.node__photo, .node__text')].filter(e => e.style.opacity).length")
-        ensure(running == 0 and inline == 0, f"{running} running animations, {inline} inline fades")
-        ensure(p.locator(".node--ticket .node__name").inner_text() == "App launch", "scenario did not change")
+        clear = p.evaluate("getComputedStyle(document.querySelector('.led[aria-pressed=true]')).getPropertyValue('--clear').trim()")
+        ensure(running == 0, f"{running} running animations")
+        ensure(clear == "96%", f"selected scene at {clear}, expected 96% immediately")
         c.close()
-        return "scenario switch after preference change is immediate"
+        return "scene selection after the preference change is immediate"
 
     browser.close()
 

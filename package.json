@@ -2,7 +2,7 @@
   "name": "zomzey-signal-atlas",
   "private": true,
   "version": "0.1.0",
-  "description": "ZOMZEY homepage contest prototype — The Living Opportunity Network / Signal Atlas",
+  "description": "ZOMZEY homepage contest prototype — Up in lights: the dot-matrix wordmark as an LED wall of reach",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,8 @@
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -b --pretty",
     "lint": "eslint .",
-    "images": "node scripts/prepare-images.mjs",
+    "images": "node scripts/prepare-images.mjs && node scripts/prepare-reach.mjs",
+    "images:reach": "node scripts/prepare-reach.mjs",
     "test:e2e": "python3 .claude/skills/webapp-testing/scripts/with_server.py --server 'npm run preview' --port 4173 -- .venv/bin/python -I tests/journeys.py",
     "export": "python3 .claude/skills/webapp-testing/scripts/with_server.py --server 'npm run preview' --port 4173 -- .venv/bin/python -I scripts/export_mockups.py"
   },

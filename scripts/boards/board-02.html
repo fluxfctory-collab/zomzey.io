@@ -1,20 +1,114 @@
 <!doctype html>
-<html lang="en-GB"><head><meta charset="utf-8"><title>Mobile concept</title><link rel="stylesheet" href="board.css">
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>02 · Mobile and responsive</title>
+<link rel="stylesheet" href="board.css">
 <style>
-  .phones { display: grid; grid-template-columns: repeat(4, 540px); justify-content: space-between; margin-top: 44px; }
-  .phones figure { display: grid; gap: 16px; }
-  .phone { width: 540px; height: 1169px; border-radius: 38px; }
-</style></head>
-<body><div class="board">
+  .field {
+    position: absolute; left: -60px; bottom: 120px; width: 1100px; height: 700px; pointer-events: none;
+    background-image: radial-gradient(ellipse 2.1px 2.5px at center, rgb(10 11 30 / 0.5) 92%, transparent 100%);
+    background-size: 12px 13.8px;
+    -webkit-mask-image: radial-gradient(closest-side at 40% 60%, #000, transparent);
+    mask-image: radial-gradient(closest-side at 40% 60%, #000, transparent);
+    opacity: 0.12;
+  }
+  .devices { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; margin-top: 58px; }
+  .device { display: grid; gap: 30px; justify-items: start; }
+  .device--lift { margin-top: -26px; }
+  .device--drop { margin-top: 30px; }
+  .phone { --w: 392px; }
+  .tablet { --w: 596px; }
+  .cap { max-width: 400px; }
+  .cap .label::before { content: attr(data-n); display: inline-grid; place-items: center; width: 30px; height: 30px; margin-right: 12px; border-radius: 50%; background: var(--navy); color: #fff; font-size: 14px; font-weight: 680; vertical-align: 2px; }
+
+  .logic { position: absolute; left: 80px; right: 80px; bottom: 132px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .bp { display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 18px 22px; border-radius: 18px; background: #fff; box-shadow: 0 1px 2px rgb(10 11 30 / 0.06), 0 14px 32px -20px rgb(10 11 30 / 0.3); }
+  .bp .label { font-size: 17px; }
+  .bp .note { margin-top: 2px; font-size: 15px; }
+  .mini { position: relative; flex: none; border-radius: 8px; background: var(--navy); padding: 8px; display: grid; gap: 4px; }
+  .mini b { display: block; border-radius: 3px; background: var(--c); }
+  .mini .t { height: 4px; border-radius: 2px; background: rgb(255 255 255 / 0.75); }
+  .mini .t.short { width: 60%; }
+  .mini .btn { height: 5px; width: 70%; border-radius: 2px; background: var(--signal); }
+  .mini--phone { width: 58px; height: 96px; grid-template-columns: 1fr 1fr; align-content: start; }
+  .mini--phone .t, .mini--phone .btn { grid-column: span 2; }
+  .mini--tablet { width: 86px; height: 96px; grid-template-columns: repeat(4, 1fr); align-content: start; }
+  .mini--tablet .t, .mini--tablet .btn { grid-column: span 4; }
+  .mini--desk { width: 128px; height: 82px; grid-template-columns: 1fr 1fr 1fr; align-items: center; column-gap: 8px; }
+  .mini--desk .col { display: grid; gap: 4px; }
+  .mini--desk .wall { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+</style>
+</head>
+<body class="paper">
+<div class="board">
+  <div class="field"></div>
   <div class="head">
-    <div><p class="caption">Mobile concept</p><h1 class="title">A readable vertical relationship story</h1></div>
-    <p class="lede">The perimeter network is recomposed, not shrunk: message and both intent actions first, then one project and three participants on a clear vertical line.</p>
+    <div>
+      <p class="caption">02 · Mobile and responsive</p>
+      <h1 class="title">One idea, every screen.</h1>
+    </div>
+    <p class="lede">On a phone the four-line promise and <strong>both actions fit the first screen</strong>. The wall follows as two staggered columns, tablets show one row of four, and every scene works by tap.</p>
   </div>
-  <div class="phones">
-    <figure><img class="shot phone" src="../../exports/ZOMZEY-mobile-hero-390@2x.png" alt=""><figcaption><p class="label">Opening, 390 × 844</p><p class="note">Headline, description and both actions before any scrolling.</p></figcaption></figure>
-    <figure><img class="shot phone" src="../../exports/states/mobile-story-expanded.png" alt=""><figcaption><p class="label">Vertical connection story</p><p class="note">Four scenarios in one row; tap a participant to read its example.</p></figcaption></figure>
-    <figure><img class="shot phone" src="../../exports/states/mobile-detail.png" alt=""><figcaption><p class="label">Example detail</p><p class="note">Labelled Example profile, with a route to real ZOMZEY members.</p></figcaption></figure>
-    <figure><img class="shot phone" src="../../exports/states/mobile-menu.png" alt=""><figcaption><p class="label">Menu</p><p class="note">Labelled Menu button, every primary link, sign in and join. Escape returns focus.</p></figcaption></figure>
+
+  <div class="devices">
+    <div class="device">
+      <div class="phone"><div class="phone__screen">
+        <span class="phone__island"></span>
+        <div class="status"><span>9:41</span><span class="status__icons"><span class="status__signal"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span><span class="status__wifi"></span><span class="status__battery"></span></span></div>
+        <img class="phone__shot" src="../../exports/states/mobile-opening.png" alt="">
+        <span class="phone__home"></span>
+      </div></div>
+      <div class="cap"><p class="label" data-n="1">Opening, 390 × 844</p><p class="note">Headline at 45px, four lines that never re-wrap. Description and both intent actions before any scrolling.</p></div>
+    </div>
+
+    <div class="device device--lift">
+      <div class="phone"><div class="phone__screen">
+        <span class="phone__island"></span>
+        <div class="status"><span>9:41</span><span class="status__icons"><span class="status__signal"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span><span class="status__wifi"></span><span class="status__battery"></span></span></div>
+        <img class="phone__shot" src="../../exports/states/mobile-scene-fans.png" alt="">
+        <span class="phone__home"></span>
+      </div></div>
+      <div class="cap"><p class="label" data-n="2">The wall, by tap</p><p class="note">Two staggered columns. Tapping Fans resolves its scene, dims the others and explains an example.</p></div>
+    </div>
+
+    <div class="device device--drop">
+      <div class="phone"><div class="phone__screen">
+        <span class="phone__island"></span>
+        <div class="status"><span>9:41</span><span class="status__icons"><span class="status__signal"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:11px"></i></span><span class="status__wifi"></span><span class="status__battery"></span></span></div>
+        <img class="phone__shot" src="../../exports/states/mobile-menu.png" alt="">
+        <span class="phone__home"></span>
+      </div></div>
+      <div class="cap"><p class="label" data-n="3">Menu</p><p class="note">A labelled Menu button opens every link, all five groups, sign in and join. Escape returns focus.</p></div>
+    </div>
+
+    <div class="device">
+      <div class="tablet"><div class="tablet__screen">
+        <img class="tablet__shot" src="../../exports/states/tablet-768.png" alt="">
+      </div></div>
+      <div class="cap"><p class="label" data-n="4">Tablet, 768 × 1024</p><p class="note">The message keeps its four lines; the wall becomes one row of four, gently offset.</p></div>
+    </div>
   </div>
-  <div class="foot"><span>ZOMZEY homepage concept prototype</span><span>Captured from the running prototype at 390 × 844 (2×)</span></div>
-</div></body></html>
+
+  <div class="logic">
+    <div class="bp">
+      <div class="mini mini--phone"><span class="t"></span><span class="t short"></span><span class="btn"></span><b style="--c: var(--creator); height: 22px"></b><b style="--c: var(--positive); height: 16px; margin-top: 6px"></b><b style="--c: var(--hub); height: 16px"></b><b style="--c: var(--signal); height: 22px"></b></div>
+      <div><p class="label">Up to 759px</p><p class="note">Message first, then two staggered columns: followers and footfall, fans and audience.</p></div>
+    </div>
+    <div class="bp">
+      <div class="mini mini--tablet"><span class="t"></span><span class="t short"></span><span class="btn"></span><b style="--c: var(--creator); height: 30px"></b><b style="--c: var(--hub); height: 30px; margin-top: 6px"></b><b style="--c: var(--positive); height: 30px"></b><b style="--c: var(--signal); height: 30px; margin-top: 6px"></b></div>
+      <div><p class="label">760 to 1199px</p><p class="note">Message across the top, the wall as one row of four with alternate offsets.</p></div>
+    </div>
+    <div class="bp">
+      <div class="mini mini--desk"><span class="col"><span class="t"></span><span class="t"></span><span class="t short"></span><span class="btn"></span></span><span class="wall"><b style="--c: var(--creator); height: 30px"></b><b style="--c: var(--positive); height: 22px; align-self: end"></b><b style="--c: var(--hub); height: 22px"></b><b style="--c: var(--signal); height: 30px"></b></span></div>
+      <div><p class="label">1200px and wider</p><p class="note">Message beside a two-by-two pinwheel; everything fits a 1440 × 900 screen.</p></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="foot__brand"><span class="plate"><img src="../../public/brand/zomzey-logo.webp" alt=""></span>Homepage concept · captured from the running prototype</span>
+    <span>Board 02 / 03</span>
+  </div>
+</div>
+</body>
+</html>
