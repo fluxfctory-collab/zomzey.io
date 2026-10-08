@@ -1,4 +1,5 @@
 import type { ImageSlug } from './images.generated'
+import { links } from './links'
 
 /* ------------------------------------------------------------------ */
 /* Shared types                                                        */
@@ -7,7 +8,7 @@ import type { ImageSlug } from './images.generated'
 export type Intent = 'promote' | 'earn'
 export type ScenarioId = 'books' | 'products' | 'music' | 'apps'
 export type RoleKind = 'project' | 'creator' | 'hub' | 'community' | 'agency'
-/** Perimeter slot in the desktop scene: top-right, bottom-left, bottom-right. */
+/** The three example participants of a scenario: online reach, a place and a community. */
 export type ParticipantSlot = 'reach' | 'place' | 'community'
 
 export interface Participant {
@@ -33,9 +34,6 @@ export interface Scenario {
     storyImage?: ImageSlug
   }
   participants: Participant[]
-  /** Participant highlighted when the scene first appears. */
-  defaultSlot: ParticipantSlot
-  summary: string
   story: {
     explanation: string
     /** Two participants shown in the "Reach in different worlds" story. */
@@ -44,7 +42,63 @@ export interface Scenario {
 }
 
 /* ------------------------------------------------------------------ */
-/* Scenarios (opening scene + relationship stories)                    */
+/* Opening: the four kinds of reach on the LED wall                    */
+/* The wording comes from the current zomzey.io headline; the scenes   */
+/* and examples are illustrations, not ZOMZEY members or results.      */
+/* ------------------------------------------------------------------ */
+
+export type ReachId = 'followers' | 'footfall' | 'fans' | 'audience'
+
+export interface ReachKind {
+  id: ReachId
+  /** The headline word this scene illustrates. */
+  word: string
+  who: string
+  /** One hypothetical example, shown when the scene is selected. */
+  example: string
+  /** Where to learn more on the live site. */
+  more: { label: string; href: string }
+  /** object-position for the photograph's crop. */
+  focus: string
+}
+
+export const reachKinds: ReachKind[] = [
+  {
+    id: 'followers',
+    word: 'Followers',
+    who: 'Creators and influencers',
+    example: 'A creator could review your book, product or app for the people who follow their recommendations.',
+    more: { label: 'Influencers on ZOMZEY', href: links.influencers },
+    focus: '42% 40%',
+  },
+  {
+    id: 'footfall',
+    word: 'Footfall',
+    who: 'Shops and venues',
+    example: 'A local shop or venue could stock, display or host your project where people walk in every day.',
+    more: { label: 'Hubs on ZOMZEY', href: links.hubs },
+    focus: '62% 42%',
+  },
+  {
+    id: 'fans',
+    word: 'Fans',
+    who: 'Bands and musicians',
+    example: 'A band or musician could share your release, product or event with the fans who follow their music.',
+    more: { label: 'Music on ZOMZEY', href: links.music },
+    focus: '50% 50%',
+  },
+  {
+    id: 'audience',
+    word: 'Audience',
+    who: 'Communities and agencies',
+    example: 'A club, community or agency could introduce your project to an audience that already trusts them.',
+    more: { label: 'Agencies on ZOMZEY', href: links.agencies },
+    focus: '55% 45%',
+  },
+]
+
+/* ------------------------------------------------------------------ */
+/* Scenarios (relationship stories)                                    */
 /* All are hypothetical examples — not live listings or endorsements. */
 /* ------------------------------------------------------------------ */
 
@@ -88,8 +142,6 @@ export const scenarios: Scenario[] = [
         detail: 'A reading group could choose the novel for a session and talk it through together.',
       },
     ],
-    defaultSlot: 'place',
-    summary: 'One book, three different ways to reach readers: online, on a shop shelf and around a table.',
     story: {
       explanation: 'Discover different ways a story might find readers.',
       pair: ['reach', 'place'],
@@ -133,8 +185,6 @@ export const scenarios: Scenario[] = [
         detail: 'A market community could offer a stall and introduce the brand to regular visitors.',
       },
     ],
-    defaultSlot: 'place',
-    summary: 'A new product can be discovered on screen and picked up in a shop.',
     story: {
       explanation: 'Combine content discovery with a physical point of contact.',
       pair: ['reach', 'place'],
@@ -178,8 +228,6 @@ export const scenarios: Scenario[] = [
         detail: 'A fan community could share the release and turn up for the show.',
       },
     ],
-    defaultSlot: 'place',
-    summary: 'A release can travel through listeners online and a room full of people.',
     story: {
       explanation: 'Explore both online listening and in-person audiences.',
       pair: ['place', 'community'],
@@ -223,8 +271,6 @@ export const scenarios: Scenario[] = [
         detail: 'A focused community could try the app and share practical feedback.',
       },
     ],
-    defaultSlot: 'reach',
-    summary: 'An app makes sense fastest when someone shows it to the people it helps.',
     story: {
       explanation: 'Bring a demonstration to people likely to understand its value.',
       pair: ['reach', 'place'],

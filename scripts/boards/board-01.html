@@ -1,39 +1,132 @@
 <!doctype html>
-<html lang="en-GB"><head><meta charset="utf-8"><title>Desktop concept</title><link rel="stylesheet" href="board.css">
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>01 · Opening concept</title>
+<link rel="stylesheet" href="board.css">
 <style>
-  .main { display: grid; grid-template-columns: 1520px 1fr; gap: 48px; margin-top: 44px; }
-  .hero { width: 1520px; height: 921px; } /* crop to the opening itself (873 of 900px) */
-  .responsive { display: flex; gap: 28px; margin-top: 36px; align-items: flex-end; }
-  .responsive figure { display: grid; gap: 10px; }
-  .r1280 { width: 432px; height: 270px; } .r1024 { width: 360px; height: 270px; } .r768 { width: 202px; height: 270px; }
-  .side { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
-  .full { width: 300px; height: auto; object-fit: contain; }
-  .points { display: grid; gap: 28px; }
-  .points p.label { margin-bottom: 6px; }
-</style></head>
-<body><div class="board">
+  /* Ambient light: the wall's four colours, very faint, plus a field of LED dots */
+  .glow { position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.22; pointer-events: none; }
+  .glow--a { width: 720px; height: 520px; left: 820px; top: 300px; background: var(--creator); opacity: 0.14; }
+  .glow--b { width: 760px; height: 560px; left: 1080px; top: 760px; background: var(--signal); }
+  .glow--c { width: 520px; height: 420px; left: 1240px; top: 260px; background: var(--positive); opacity: 0.1; }
+  .field {
+    position: absolute; right: -40px; top: -60px; width: 900px; height: 620px; pointer-events: none;
+    background-image: radial-gradient(ellipse 2.1px 2.5px at center, rgb(180 189 212 / 0.5) 92%, transparent 100%);
+    background-size: 12px 13.8px;
+    -webkit-mask-image: radial-gradient(closest-side at 70% 30%, #000, transparent);
+    mask-image: radial-gradient(closest-side at 70% 30%, #000, transparent);
+    opacity: 0.35;
+  }
+
+  .main { position: relative; z-index: 1; display: grid; grid-template-columns: 1648px minmax(0, 1fr); gap: 64px; margin-top: 84px; }
+  /* Notes at the top, the before/after pair on the browser's bottom edge */
+  aside { display: flex; flex-direction: column; justify-content: space-between; padding-top: 6px; }
+  .stage { position: relative; }
+  .shot-wrap { position: relative; }
+
+  .points { display: grid; gap: 24px; list-style: none; counter-reset: point; }
+  .point { position: relative; padding-left: 58px; counter-increment: point; }
+  .point::before {
+    content: counter(point); position: absolute; left: 0; top: -4px; display: grid; place-items: center;
+    width: 36px; height: 36px; border-radius: 50%; background: #fff; color: var(--navy); font-size: 16px; font-weight: 680;
+  }
+  .point .note { font-size: 17px; }
+  .swatches { display: flex; gap: 8px; margin-top: 12px; }
+  .swatches span { display: inline-flex; align-items: center; gap: 8px; padding: 5px 11px 5px 9px; border-radius: 999px; background: rgb(255 255 255 / 0.06); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12); font-size: 13px; font-weight: 560; color: #dfe4f2; }
+  .swatches i { width: 8px; height: 10px; border-radius: 50%; background: var(--c); }
+
+  .compare { padding-top: 28px; border-top: 1px solid rgb(255 255 255 / 0.14); }
+  .compare__row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 18px; }
+  .compare figure { display: grid; gap: 12px; }
+  .thumb { width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 12px; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16), 0 24px 40px -24px rgb(0 0 0 / 0.8); background: #0b0e2c; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .compare figcaption { color: var(--muted-dark); font-size: 15px; line-height: 1.4; }
+  .compare figcaption strong { display: block; color: #fff; font-size: 16px; font-weight: 620; }
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="glow glow--a"></div><div class="glow glow--b"></div><div class="glow glow--c"></div>
+  <div class="field"></div>
+
   <div class="head">
-    <div><p class="caption">Desktop concept</p><h1 class="title">The living opportunity network</h1></div>
-    <p class="lede">The dotted wordmark becomes a network. One project connects to a creator, a shop and a community around a calm, central message that is never covered.</p>
-  </div>
-  <div class="main">
     <div>
-      <img class="shot hero" src="../../exports/ZOMZEY-desktop-hero-1440@2x.png" alt="">
-      <div class="responsive">
-        <figure><img class="shot r1280" src="../../exports/states/responsive-1280.png" alt=""><figcaption class="note">1280: same perimeter composition</figcaption></figure>
-        <figure><img class="shot r1024" src="../../exports/states/responsive-1024.png" alt=""><figcaption class="note">1024: adjacent compact scene</figcaption></figure>
-        <figure><img class="shot r768" src="../../exports/states/responsive-768.png" alt=""><figcaption class="note">768: tablet story</figcaption></figure>
-      </div>
+      <p class="caption">01 · Opening concept</p>
+      <h1 class="title">Up in lights.</h1>
     </div>
-    <div class="side">
-      <figure style="display:grid;gap:10px"><img class="shot full" src="../../exports/ZOMZEY-desktop-full-1440.png" alt=""><figcaption class="note">Full homepage, 1440px</figcaption></figure>
-      <div class="points">
-        <div><p class="label"><span class="dot"></span>Message-safe centre</p><p class="note">Headline, description and both intent actions sit in a reserved column. Routes run behind the cards.</p></div>
-        <div><p class="label"><span class="dot"></span>Physical and digital reach</p><p class="note">A reviewer, a bookshop and a reading group show reach beyond creators.</p></div>
-        <div><p class="label"><span class="dot"></span>Labelled examples</p><p class="note">Illustrative connection, example profiles and an illustrative workflow. No invented totals or testimonials.</p></div>
-        <div><p class="label"><span class="dot"></span>Chapters, not cards</p><p class="note">Opening, relationship stories, a transit-line process, a working explorer, a trust record and two closing routes.</p></div>
-      </div>
-    </div>
+    <p class="lede">The new opening turns the <strong>dot-matrix wordmark into an LED wall</strong>. ZOMZEY’s own line names four kinds of reach, and each one gets an observed brand colour and a scene of its own.</p>
   </div>
-  <div class="foot"><span>ZOMZEY homepage concept prototype</span><span>Captured from the running prototype at 1440 × 900</span></div>
-</div></body></html>
+
+  <div class="main">
+    <div class="stage">
+      <div class="browser">
+        <div class="browser__bar">
+          <div class="browser__dots"><span></span><span></span><span></span></div>
+          <span class="browser__url">zomzey.io</span>
+        </div>
+        <div class="shot-wrap">
+          <img src="../../exports/ZOMZEY-desktop-hero-1440@2x.png" width="2880" height="1800" alt="">
+          <!-- Marker positions: % of the 1440 × 900 capture (see export_mockups.py) -->
+          <span class="pin" style="left: 9.9%; top: 10.4%">1</span>
+          <span class="pin" style="left: 47.6%; top: 46.4%">2</span>
+          <span class="pin" style="left: 96%; top: 21.5%">3</span>
+          <span class="pin" style="left: 47.6%; top: 78.8%">4</span>
+          <span class="pin" style="left: 48.8%; top: 91.6%">5</span>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <ol class="points">
+        <li class="point">
+          <p class="label">The official wordmark</p>
+          <p class="note">The supplied dot-matrix logo, untouched, white on navy. Its upright oval dot is the seed of everything else.</p>
+        </li>
+        <li class="point">
+          <p class="label">ZOMZEY’s own promise, in colour</p>
+          <p class="note">“Promote through people with followers, footfall, fans &amp; audience.” Four lines, sized to fill the column exactly.</p>
+          <div class="swatches">
+            <span style="--c: var(--creator)"><i></i>Followers</span>
+            <span style="--c: var(--hub)"><i></i>Footfall</span>
+            <span style="--c: var(--positive)"><i></i>Fans</span>
+            <span style="--c: var(--signal)"><i></i>Audience</span>
+          </div>
+        </li>
+        <li class="point">
+          <p class="label">LED scenes that spill light</p>
+          <p class="note">Duotone photographs resolve out of a 6 × 6.9px oval dot grid and light the page around them.</p>
+        </li>
+        <li class="point">
+          <p class="label">Two clear starts</p>
+          <p class="note">Promote something, or earn from your audience. Both sit above the fold at every width.</p>
+        </li>
+        <li class="point">
+          <p class="label">Tune in</p>
+          <p class="note">Choosing a scene brings it fully into focus, explains an example and lights its word in the headline.</p>
+        </li>
+      </ol>
+
+      <div class="compare">
+        <p class="label">Before and after</p>
+        <div class="compare__row">
+          <figure>
+            <div class="thumb"><img src="assets/zomzey-current-homepage.webp" alt=""></div>
+            <figcaption><strong>zomzey.io today</strong>Promise, services list and filters compete in the first screen.</figcaption>
+          </figure>
+          <figure>
+            <div class="thumb"><img src="../../exports/ZOMZEY-desktop-hero-1440.png" alt=""></div>
+            <figcaption><strong>This concept</strong>One promise, one picture of reach, two actions.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="foot">
+    <span class="foot__brand"><span class="plate"><img src="../../public/brand/zomzey-logo.webp" alt=""></span>Homepage concept · captured from the running prototype at 1440 × 900</span>
+    <span>Board 01 / 03</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,53 +1,90 @@
+import type { CSSProperties, ReactNode } from 'react'
 import { Photo } from '../components/Photo'
 import { BrandLogo } from '../components/BrandLogo'
+import type { ReachId } from '../data/content'
 
 /*
  * Living style guide — rendered with the homepage's own tokens, CSS and components.
- * Captured at 2400 × 1600 for exports/ZOMZEY-board-03-style-guide.png.
+ * Captured at 2400 × 1600 for exports/ZOMZEY-board-03-visual-system.png.
  */
 
-const colours = [
-  { name: 'Navy', token: '--navy', hex: '#000222', role: 'Opening, header, footer, trust panel', status: 'Observed', ink: 'light' },
-  { name: 'Paper', token: '--paper', hex: '#FAFAF8', role: 'Stories, explorer, closing', status: 'Observed', ink: 'dark' },
-  { name: 'Ink', token: '--ink', hex: '#0A0B1E', role: 'Text on light surfaces', status: 'Observed', ink: 'light' },
-  { name: 'Signal', token: '--signal', hex: '#1FA9FF', role: 'Primary action, active route', status: 'Observed', ink: 'dark' },
-  { name: 'Creator', token: '--creator', hex: '#FF6600', role: 'Small creator marker only', status: 'Observed', ink: 'dark' },
-  { name: 'Hub', token: '--hub', hex: '#FFD42E', role: 'Small hub marker only', status: 'Observed', ink: 'dark' },
-  { name: 'Surface dark', token: '--surface-dark', hex: '#101437', role: 'Dark cards, menus', status: 'Proposed', ink: 'light' },
-  { name: 'Muted on dark', token: '--muted-on-dark', hex: '#B4BDD4', role: 'Secondary text on navy, 10.8:1', status: 'Proposed', ink: 'dark' },
-  { name: 'Muted on light', token: '--muted-on-light', hex: '#5A5C72', role: 'Secondary text on paper, 6.3:1', status: 'Observed', ink: 'light' },
-  { name: 'Signal on light', token: '--signal-on-light', hex: '#0065A8', role: 'Links, focus, routes on paper, 5.9:1', status: 'Proposed', ink: 'light' },
+const identity = [
+  { name: 'Navy', hex: '#000222', token: '--navy', role: 'Opening, header, process, footer', status: 'Observed', ink: 'light' },
+  { name: 'Paper', hex: '#FAFAF8', token: '--paper', role: 'Stories, explorer, closing', status: 'Observed', ink: 'dark' },
+  { name: 'Ink', hex: '#0A0B1E', token: '--ink', role: 'Text on paper, 18.6:1', status: 'Observed', ink: 'light' },
+]
+
+const reach: { id: ReachId; name: string; hex: string; token: string; role: string }[] = [
+  { id: 'followers', name: 'Followers', hex: '#FF6600', token: '--creator', role: 'Creators and influencers' },
+  { id: 'footfall', name: 'Footfall', hex: '#FFD42E', token: '--hub', role: 'Shops and venues' },
+  { id: 'fans', name: 'Fans', hex: '#20E3A2', token: '--positive', role: 'Bands and musicians' },
+  { id: 'audience', name: 'Audience', hex: '#1FA9FF', token: '--signal', role: 'Communities, agencies; primary action' },
+]
+
+const support = [
+  { name: 'Surface dark', hex: '#101437', token: '--surface-dark', role: 'Dark cards, menu sheet', ink: 'light' },
+  { name: 'Muted on dark', hex: '#B4BDD4', token: '--muted-on-dark', role: 'Secondary text on navy, 10.8:1', ink: 'dark' },
+  { name: 'Muted on light', hex: '#5A5C72', token: '--muted-on-light', role: 'Secondary text on paper, 6.3:1', ink: 'light' },
+  { name: 'Signal on light', hex: '#0065A8', token: '--signal-on-light', role: 'Links, focus, routes on paper', ink: 'light' },
 ]
 
 const type = [
-  { label: 'Opening H1', spec: '84 / 1.03, 660, −0.042em', cls: 'sg-h1', text: 'Make the next connection count' },
   { label: 'Section H2', spec: '52 / 1.1, 620, −0.03em', cls: 'sg-h2', text: 'Different kinds of reach.' },
   { label: 'Story heading', spec: '28 / 1.18, 620', cls: 'sg-h3', text: 'Independent bookshop' },
-  { label: 'Lead', spec: '20 / 1.5, 400', cls: 'sg-lead', text: 'Bring your project to the people, places and communities that can help it grow.' },
-  { label: 'Body', spec: '17 / 1.55, 400', cls: 'sg-body', text: 'A local bookshop could host a launch evening and keep copies where browsers will find them.' },
-  { label: 'Meta', spec: '14 / 1.4, 520', cls: 'sg-meta', text: 'Content audience, online' },
+  { label: 'Lead', spec: '20 / 1.5, 400', cls: 'sg-lead', text: 'More than an influencer platform: ZOMZEY connects your project with creators, shops and venues.' },
+  { label: 'Body', spec: '17 / 1.55, 400', cls: 'sg-body', text: 'A local shop or venue could stock, display or host your project where people walk in every day.' },
+  { label: 'Meta', spec: '14 / 1.4, 520', cls: 'sg-meta', text: 'Shops and venues' },
 ]
+
+/** One static LED scene, built from the same classes as the opening's wall. */
+function Led({ id, word, who, pressed, className, style, children }: {
+  id: ReachId
+  word: string
+  who: string
+  pressed?: boolean
+  className?: string
+  style?: CSSProperties
+  children?: ReactNode
+}) {
+  return (
+    <div className={['reach-wall__item', 'sg__led', className].filter(Boolean).join(' ')} data-reach={id} style={style}>
+      <span className="led__spill" aria-hidden="true">
+        <img src={`/images/reach/${id}-160.webp`} width={160} height={120} alt="" />
+      </span>
+      <button type="button" className="led" aria-pressed={pressed}>
+        <span className="led__screen">
+          <img src={`/images/reach/${id}-640.webp`} width={640} height={480} alt="" />
+        </span>
+        <span className="led__label">
+          <span className="led__word">{word}</span>
+          <span className="led__who">{who}</span>
+        </span>
+      </button>
+      {children}
+    </div>
+  )
+}
 
 export function StyleGuide() {
   return (
     <div className="sg">
       <header className="sg__head on-dark">
         <div>
-          <p className="sg__caption">Visual system</p>
-          <h1 className="sg__title">ZOMZEY Signal Atlas</h1>
+          <p className="sg__caption">03 · Visual system</p>
+          <h1 className="sg__title">Built from one dot.</h1>
         </div>
         <p className="sg__intro">
-          Observed identity (logo, navy, signal blue, role colours, Instrument Sans) with proposed supporting tokens. One
-          family, one motif: dots become connection points.
+          The official dot-matrix wordmark sets the rules: navy, upright oval dots and one family, Instrument Sans. Four
+          observed brand colours name the four kinds of reach, and every photograph is lit like an LED screen.
         </p>
       </header>
 
       {/* Component specimens are rendered with the real classes but are not interactive here. */}
       <div className="sg__grid" inert>
-        <section className="sg__panel sg__colours" aria-label="Colour roles">
-          <h2 className="sg__label">Colour roles</h2>
+        <section className="sg__panel sg__colours" aria-label="Colour">
+          <h2 className="sg__label">Identity</h2>
           <ul>
-            {colours.map((c) => (
+            {identity.map((c) => (
               <li key={c.token} className="sg__swatch">
                 <span className={`sg__chip sg__chip--${c.ink}`} style={{ background: `var(${c.token})` }}>
                   {c.hex}
@@ -59,22 +96,48 @@ export function StyleGuide() {
               </li>
             ))}
           </ul>
-          <p className="sg__note">Bright blue, orange and yellow never carry small text on white. Colour always pairs with a label.</p>
-          <div className="sg__balance">
-            <h2 className="sg__label">Opening colour balance</h2>
-            <div className="sg__bar" aria-hidden="true">
-              <span style={{ flex: 78, background: 'var(--navy)' }} />
-              <span style={{ flex: 17, background: 'var(--surface-dark)' }} />
-              <span style={{ flex: 2.5, background: 'var(--signal)' }} />
-              <span style={{ flex: 1.3, background: 'var(--creator)' }} />
-              <span style={{ flex: 1.2, background: 'var(--hub)' }} />
-            </div>
-            <p className="sg__note">About 78% navy field, 17% content and imagery, a few percent saturated signal and role colour.</p>
-          </div>
+          <h2 className="sg__label">Four kinds of reach</h2>
+          <ul className="sg__ramps">
+            {reach.map((c) => (
+              <li key={c.id} className="sg__ramp" data-reach={c.id}>
+                <span className="sg__ramp-bar" aria-hidden="true" />
+                <span className="sg__swatch-text">
+                  <strong>{c.name}</strong> <span className="sg__status">{c.hex}, observed</span>
+                  <span className="sg__role">{c.role}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="sg__note">Each ramp is the duotone map for its scene: navy shadows, the colour in the mid-tones, a pale tint in the highlights.</p>
+          <h2 className="sg__label">Supporting</h2>
+          <ul className="sg__support">
+            {support.map((c) => (
+              <li key={c.token} className="sg__mini">
+                <span className={`sg__chip sg__chip--${c.ink}`} style={{ background: `var(${c.token})` }}>
+                  {c.hex}
+                </span>
+                <span className="sg__role">
+                  <strong>{c.name}</strong>
+                  {c.role}
+                </span>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="sg__panel sg__type" aria-label="Type hierarchy">
           <h2 className="sg__label">Instrument Sans, one family</h2>
+          <div className="sg__type-row">
+            <span className="sg__type-meta">
+              <strong>Opening H1</strong>
+              <span>12.9cqi (78 desktop, 45 at 390) / 1.02, 660, −0.045em</span>
+            </span>
+            <p className="sg-h1">
+              Promote through people with <span className="hero__word" data-reach="followers">followers,</span>{' '}
+              <span className="hero__word" data-reach="footfall">footfall,</span> <span className="hero__word" data-reach="fans">fans</span> &amp;{' '}
+              <span className="hero__word" data-reach="audience">audience.</span>
+            </p>
+          </div>
           <ul>
             {type.map((t) => (
               <li key={t.label} className="sg__type-row">
@@ -82,15 +145,12 @@ export function StyleGuide() {
                   <strong>{t.label}</strong>
                   <span>{t.spec}</span>
                 </span>
-                <span className={t.cls}>
-                  {t.text}
-                  {t.cls === 'sg-h1' ? <span className="hero__stop" aria-hidden="true" /> : null}
-                </span>
+                <span className={t.cls}>{t.text}</span>
               </li>
             ))}
           </ul>
           <div className="sg__scale">
-            <h2 className="sg__label">Spacing, radius, motion</h2>
+            <h2 className="sg__label">Spacing and shape</h2>
             <div className="sg__space">
               {[4, 8, 12, 16, 24, 32, 48, 64, 80, 112].map((n) => (
                 <span key={n} className="sg__space-step">
@@ -99,83 +159,95 @@ export function StyleGuide() {
                 </span>
               ))}
             </div>
-            <p className="sg__note">
-              Radius 12 controls, 16 cards, 24 story surfaces, round dots. Motion 160–320ms state changes, one 0.85s
-              opening; none under reduced motion.
-            </p>
+            <p className="sg__note">Radius 12 controls and caption chips, 16 cards, 20 LED screens, 24 story surfaces. One family, sentence case, no display face.</p>
           </div>
         </section>
 
-        <section className="sg__panel sg__panel--dark on-dark" aria-label="Components on navy">
-          <h2 className="sg__label">On navy</h2>
-          <div className="sg__row">
-            <span className="button button--primary">I want to promote something</span>
-            <span className="button button--secondary-dark">I want to earn from my audience</span>
+        <section className="sg__panel sg__panel--dark sg__anatomy on-dark" aria-label="LED scene">
+          <h2 className="sg__label">Anatomy of an LED scene</h2>
+          <div className="sg__anatomy-body">
+            <div className="reach-wall sg__wall">
+              <Led id="footfall" word="Footfall" who="Shops and venues" className="sg__led--hero">
+                <span className="sg__pin" style={{ left: '50%', top: '40%' }}>1</span>
+                <span className="sg__pin" style={{ left: '94%', top: '14%' }}>2</span>
+                <span className="sg__pin" style={{ left: '105%', top: '62%' }}>3</span>
+                <span className="sg__pin" style={{ left: '62%', top: '88%' }}>4</span>
+              </Led>
+            </div>
+            <ol className="sg__legend">
+              <li>
+                <strong>Clear centre</strong>A duotone photograph resolves in a soft ellipse.
+              </li>
+              <li>
+                <strong>LED edge</strong>Outside it, the scene shows only through 6 × 6.9px oval dots, the wordmark’s shape.
+              </li>
+              <li>
+                <strong>Dot spill</strong>The blurred scene, through the same grid, lights the page around the screen.
+              </li>
+              <li>
+                <strong>Caption chip</strong>Real text on navy at 84%, so it reads over any scene.
+              </li>
+            </ol>
           </div>
-          <div className="sg__row">
-            <span className="scenario-control">
-              <button type="button" className="scenario-control__option" aria-pressed="true">
-                Books
-              </button>
-              <button type="button" className="scenario-control__option" aria-pressed="false">
-                Products
-              </button>
-              <button type="button" className="scenario-control__option" aria-pressed="false">
-                Music
-              </button>
-            </span>
-            <span className="example-tag">Illustrative connection</span>
+
+          <h2 className="sg__label">States</h2>
+          <div className="sg__states">
+            <figure>
+              <div className="reach-wall sg__wall">
+                <Led id="audience" word="Audience" who="Default" />
+              </div>
+              <figcaption>Default · 58% clear</figcaption>
+            </figure>
+            <figure>
+              <div className="reach-wall sg__wall">
+                <Led id="audience" word="Audience" who="Hover" style={{ '--clear': '72%' } as CSSProperties} />
+              </div>
+              <figcaption>Hover · 72%</figcaption>
+            </figure>
+            <figure>
+              <div className="reach-wall sg__wall" data-tuned="audience">
+                <Led id="audience" word="Audience" who="Selected" pressed />
+              </div>
+              <figcaption>Selected · 96%</figcaption>
+            </figure>
+            <figure>
+              <div className="reach-wall sg__wall" data-tuned="followers">
+                <Led id="audience" word="Audience" who="Muted" pressed={false} />
+              </div>
+              <figcaption>Muted · dots only</figcaption>
+            </figure>
           </div>
-          <div className="sg__row sg__roles">
-            <span className="role role--project">Project</span>
-            <span className="role role--creator">Creator</span>
-            <span className="role role--hub">Shop / Hub</span>
-            <span className="role role--community">Community / Hub</span>
-            <span className="role role--agency">Agency</span>
-          </div>
-          <div className="sg__nodes">
-            <span className="node node--ticket">
-              <Photo slug="book-pages" sizes="216px" className="node__photo" decorative eager />
-              <span className="node__perforation" />
-              <span className="node__text">
-                <span className="role role--project">Project</span>
-                <span className="node__name">Book launch</span>
-                <span className="node__meta">Ticket: the project</span>
+          <p className="sg__note sg__note--dark">
+            On load the wall switches on once: each screen fades in and resolves from 1% to 58% in 1.1s, 120ms apart. With reduced
+            motion it is simply on.
+          </p>
+
+          <div className="sg__dark-row">
+            <div className="sg__components">
+              <p className="hero__eyebrow">
+                <span className="hero__eyebrow-dots" aria-hidden="true" />
+                The opportunity-led platform
+              </p>
+              <div className="sg__row">
+                <span className="button button--primary button--lg">I want to promote something</span>
+                <span className="button button--secondary-dark button--lg">I want to earn from my audience</span>
+              </div>
+              <p className="sg__detail">
+                <span className="example-tag">Illustrative scenes</span>
+                <span>
+                  <strong>Footfall.</strong> A local shop or venue could stock, display or host your project.
+                </span>
+              </p>
+            </div>
+            <div className="sg__logo">
+              <span className="sg__logo-frame">
+                <BrandLogo />
               </span>
-            </span>
-            <span className="node node--portrait" data-active="true">
-              <Photo slug="reader-park" sizes="150px" className="node__photo" decorative eager />
-              <span className="node__text">
-                <span className="role role--creator">Creator</span>
-                <span className="node__name">Portrait node</span>
-                <span className="node__meta">Active state</span>
-              </span>
-            </span>
-            <span className="node node--mini">
-              <Photo slug="reading-group" sizes="72px" className="node__photo" decorative eager />
-              <span className="node__text">
-                <span className="role role--community">Community / Hub</span>
-                <span className="node__name">Mini card</span>
-                <span className="node__meta">Community</span>
-              </span>
-            </span>
-          </div>
-          <svg className="sg__routes" viewBox="0 0 560 70" aria-hidden="true">
-            <path className="route route--idle" d="M10 20 H250" />
-            <path className="route route--active" data-on="true" d="M10 50 H250" />
-            <circle className="port" cx="300" cy="20" r="5.5" />
-            <circle className="port" data-on="true" cx="300" cy="50" r="5.5" />
-            {Array.from({ length: 18 }, (_, i) => (
-              <ellipse key={i} cx={360 + (i % 6) * 10 + (Math.floor(i / 6) % 2) * 5} cy={20 + Math.floor(i / 6) * 9.2} rx="2.1" ry="2.9" fill="#b4bdd4" opacity={0.5 - (i % 6) * 0.06} />
-            ))}
-          </svg>
-          <p className="sg__note sg__note--dark">Idle route, active route, ports and an endpoint halo. Lines sit behind real HTML.</p>
-          <div className="sg__logo">
-            <BrandLogo />
-            <p className="sg__note sg__note--dark">
-              Official white wordmark on navy only, 150–166px header, clear space half its height. Never retyped, recoloured or
-              animated. Slot shown until new99.png is supplied.
-            </p>
+              <p className="sg__note sg__note--dark">
+                Official wordmark, white on navy only. 158px in the header, 138px on phones, clear space half its height. Never
+                retyped, recoloured or animated.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -214,25 +286,12 @@ export function StyleGuide() {
               <span className="sg__role">Numbered only where the content is a sequence.</span>
             </span>
           </div>
-          <h2 className="sg__label">States</h2>
+          <h2 className="sg__label">Focus</h2>
           <div className="sg__row">
             <button type="button" className="chip sg__focus" aria-pressed="false">
               Keyboard focus
             </button>
             <span className="sg__role">2px outline, 3px offset: #0065A8 on paper, #1FA9FF on navy</span>
-          </div>
-          <div className="sg__mobile on-dark">
-            <span className="sg__label">Mobile alternative: one step of the vertical story</span>
-            <div className="vstory__step" data-on="true">
-              <span className="vstory__node">
-                <Photo slug="bookshop" sizes="56px" className="vstory__photo" decorative eager />
-                <span className="vstory__text">
-                  <span className="role role--hub">Shop / Hub</span>
-                  <span className="vstory__name">Independent bookshop</span>
-                  <span className="vstory__meta">Local shop</span>
-                </span>
-              </span>
-            </div>
           </div>
           <span className="example-tag">Example connections</span>
           <p className="detail__note">
@@ -240,6 +299,16 @@ export function StyleGuide() {
           </p>
         </section>
       </div>
+
+      <footer className="sg__foot">
+        <span className="sg__foot-brand">
+          <span className="sg__plate">
+            <BrandLogo />
+          </span>
+          Homepage concept · rendered from the prototype’s own tokens, CSS and components
+        </span>
+        <span>Board 03 / 03</span>
+      </footer>
     </div>
   )
 }

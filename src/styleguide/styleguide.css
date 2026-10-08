@@ -4,11 +4,45 @@ body {
 }
 
 .sg {
+  position: relative;
   width: 2400px;
   min-height: 1600px;
   display: grid;
   grid-template-rows: auto 1fr;
   background: var(--paper);
+}
+
+.sg__foot {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-light);
+  color: var(--muted-on-light);
+  font-size: 1rem;
+}
+
+.sg__foot-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* The white wordmark stays on navy, as a compact identity plate on paper. */
+.sg__plate {
+  display: inline-grid;
+  place-items: center;
+  padding: 9px 14px;
+  border-radius: 10px;
+  background: var(--navy);
+}
+
+.sg__plate .brand-logo {
+  width: 120px;
 }
 
 .sg__head {
@@ -22,16 +56,28 @@ body {
 }
 
 .sg__caption {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   color: var(--signal);
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 620;
+  letter-spacing: 0.01em;
+}
+
+.sg__caption::before {
+  content: '';
+  width: 15px;
+  height: 11px;
+  background-image: radial-gradient(ellipse 1.9px 2.4px at center, currentColor 92%, transparent 100%);
+  background-size: 5px 5.5px;
 }
 
 .sg__title {
-  margin-top: 8px;
-  font-size: 4rem;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  margin-top: 14px;
+  font-size: 4.75rem;
+  line-height: 1;
+  letter-spacing: -0.045em;
   font-weight: 660;
 }
 
@@ -44,10 +90,10 @@ body {
 
 .sg__grid {
   display: grid;
-  grid-template-columns: 440px 600px minmax(0, 1fr) 480px;
+  grid-template-columns: 400px 560px minmax(0, 1fr) 420px;
   gap: 28px;
   align-items: start;
-  padding: 44px 80px 56px;
+  padding: 40px 80px 120px;
 }
 
 .sg__panel {
@@ -168,11 +214,15 @@ body {
 }
 
 .sg-h1 {
-  font-size: 5.25rem;
-  line-height: 1.03;
-  letter-spacing: -0.042em;
-  word-spacing: 0.07em;
+  font-size: 4rem;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  word-spacing: 0.06em;
   font-weight: 660;
+}
+
+.sg__type .sg__type-row:first-of-type {
+  margin-bottom: 18px;
 }
 
 .sg-h2 {
@@ -244,29 +294,6 @@ body {
   gap: 10px 20px;
 }
 
-.sg__nodes {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 28px 32px;
-  padding: 8px 6px 4px;
-}
-
-.sg__nodes .node--portrait {
-  margin-top: 0;
-}
-
-.sg__routes {
-  width: 100%;
-  height: auto;
-}
-
-.sg__logo {
-  display: grid;
-  gap: 12px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line-dark);
-}
 
 .sg__pcard {
   height: auto;
@@ -288,40 +315,212 @@ body {
   flex: none;
 }
 
-.sg__balance {
-  display: grid;
-  gap: 10px;
-  margin-top: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line-light);
-}
-
-.sg__bar {
-  display: flex;
-  height: 28px;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--line-light);
-}
-
 .sg__focus {
   outline: 2px solid var(--signal-on-light);
   outline-offset: 3px;
 }
 
-.sg__mobile {
+/* Reach ramps: the duotone map of each scene */
+.sg__ramps {
   display: grid;
-  gap: 4px;
-  padding: 16px 16px 12px;
-  border-radius: 16px;
-  background: var(--surface-dark);
-  color: var(--text-on-dark);
+  gap: 12px;
 }
 
-.sg__mobile .sg__label {
+.sg__ramp {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.sg__ramp-bar {
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--reach) 58%, color-mix(in srgb, var(--reach) 28%, white) 100%);
+}
+
+.sg__support {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sg__mini {
+  display: grid;
+  gap: 6px;
+}
+
+.sg__mini .sg__chip {
+  height: 44px;
+}
+
+.sg__mini .sg__role strong {
+  display: block;
+  color: var(--ink);
+  font-weight: 620;
+}
+
+/* LED anatomy (navy panel) */
+.sg__anatomy {
+  gap: 20px;
+}
+
+.sg__led {
+  position: relative;
+  height: 100%;
+}
+
+.sg .led,
+.sg .led__spill {
+  animation: none;
+}
+
+.sg__wall {
+  --dot-x: 6px;
+  --dot-y: 6.9px;
+  --spill-x: 6;
+  --spill-y: 5;
+}
+
+.sg__anatomy-body {
+  display: grid;
+  grid-template-columns: 390px minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 28px 12px 20px 36px;
+}
+
+.sg__led--hero {
+  height: 300px;
+}
+
+.sg__pin {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.875rem;
+  font-weight: 650;
+  box-shadow: 0 0 0 4px rgb(0 2 34 / 0.55);
+}
+
+.sg__legend {
+  display: grid;
+  gap: 16px;
+  counter-reset: pin;
+}
+
+.sg__legend li {
+  position: relative;
+  padding-left: 42px;
   color: var(--muted-on-dark);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  counter-increment: pin;
 }
 
-.sg__mobile .vstory__step {
-  --rail-x: 34px;
+.sg__legend li::before {
+  content: counter(pin);
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.sg__legend strong {
+  display: block;
+  color: var(--text-on-dark);
+  font-weight: 620;
+}
+
+.sg__states {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  padding: 18px 18px 4px;
+}
+
+.sg__states figure {
+  display: grid;
+  gap: 18px;
+}
+
+.sg__states .sg__led {
+  height: 150px;
+}
+
+.sg__states .led__label {
+  left: 8px;
+  bottom: 8px;
+  padding: 6px 10px 7px 9px;
+}
+
+.sg__states .led__word {
+  font-size: 0.9375rem;
+}
+
+.sg__states .led__who {
+  font-size: 0.75rem;
+}
+
+.sg__states figcaption {
+  color: var(--muted-on-dark);
+  font-size: 0.8125rem;
+  font-weight: 540;
+}
+
+.sg__dark-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 32px;
+  align-items: start;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-dark);
+}
+
+.sg__components {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.sg__detail {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  color: var(--muted-on-dark);
+  font-size: 0.9375rem;
+}
+
+.sg__detail strong {
+  color: var(--text-on-dark);
+  font-weight: 620;
+}
+
+.sg__logo {
+  display: grid;
+  gap: 14px;
+}
+
+/* Clear space: half the logo's height on every side */
+.sg__logo-frame {
+  justify-self: start;
+  padding: 12px;
+  outline: 1px dashed var(--control-line-dark);
+  outline-offset: 0;
+  border-radius: 4px;
 }

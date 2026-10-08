@@ -162,6 +162,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
   font-size: var(--fs-meta);
   font-weight: 520;
   line-height: 1.4;

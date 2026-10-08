@@ -3,13 +3,14 @@ Exports the contest mock-ups, alternate states and presentation boards from the
 running production preview. Run with:  npm run build && npm run export
 
 Outputs (exports/):
-  ZOMZEY-desktop-hero-1440.png   1440 × 900 opening viewport (1×)
-  ZOMZEY-desktop-full-1440.png   full homepage at 1440 (1×)
-  ZOMZEY-mobile-hero-390.png     390 × 844 opening viewport (1×)
-  ZOMZEY-mobile-full-390.png     full homepage at 390 (1×)
-  *@2x.png                       high-resolution versions used on the boards
-  states/*.png                   deliberate alternate UI states (2×)
-  ZOMZEY-board-01..04.png        2400 × 1600 presentation boards
+  ZOMZEY-desktop-full-1440.png      the desktop screenshot: full homepage at 1440 (1×)
+  ZOMZEY-mobile-full-390@2x.png     the mobile screenshot: full homepage at 390 (2×; 1× too)
+  ZOMZEY-desktop-hero-1440.png      1440 × 900 opening viewport (1×, @2x)
+  ZOMZEY-mobile-hero-390.png        390 × 844 opening viewport (1×, @2x)
+  states/*.png                      deliberate alternate UI states
+  ZOMZEY-board-01-opening.png       2400 × 1600 presentation boards
+  ZOMZEY-board-02-responsive.png
+  ZOMZEY-board-03-visual-system.png (captured from /styleguide.html)
 """
 import os
 from pathlib import Path
@@ -21,6 +22,9 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "exports"
 STATES = OUT / "states"
 STATES.mkdir(parents=True, exist_ok=True)
+
+# The LED wall switches on once (last scene ≈ 1.6s); captures wait until it has settled.
+WALL_SETTLED = 2600
 
 
 def open_page(browser, w, h, dpr=1, reduced=False, touch=False):
@@ -39,7 +43,7 @@ def open_page(browser, w, h, dpr=1, reduced=False, touch=False):
 
 
 def settle(page):
-    """Load every lazy image, return to the top and wait until the scene is stable."""
+    """Load every lazy image, return to the top and wait until the page is stable."""
     page.evaluate(
         """async () => {
             const step = Math.round(innerHeight * 0.75)
@@ -65,18 +69,29 @@ def shot(page, name, **kw):
     print("✓", Path(name).relative_to(ROOT))
 
 
+def tune(page, word, touch=False):
+    """Select one LED scene and let its 480ms resolve finish."""
+    scene = page.locator(".led", has_text=word)
+    if touch:
+        scene.tap()
+    else:
+        scene.click()
+        page.mouse.move(4, 4)  # no hover preview on the other scenes
+    page.wait_for_timeout(900)
+
+
 with sync_playwright() as pw:
     browser = pw.chromium.launch()
 
     # ---------- Required mock-ups ----------
     for dpr, suffix in [(1, ""), (2, "@2x")]:
         ctx, p = open_page(browser, 1440, 900, dpr)
-        p.wait_for_timeout(2200)  # opening sequence complete; deterministic default scene
+        p.wait_for_timeout(WALL_SETTLED)
         shot(p, OUT / f"ZOMZEY-desktop-hero-1440{suffix}.png")
         ctx.close()
 
         ctx, p = open_page(browser, 390, 844, dpr, touch=True)
-        p.wait_for_timeout(800)
+        p.wait_for_timeout(WALL_SETTLED)
         shot(p, OUT / f"ZOMZEY-mobile-hero-390{suffix}.png")
         ctx.close()
 
@@ -91,23 +106,16 @@ with sync_playwright() as pw:
         shot(p, OUT / f"ZOMZEY-mobile-full-390{suffix}.png", full_page=True)
         ctx.close()
 
-    # ---------- Desktop states (2×) ----------
+    # ---------- Opening states (2×) ----------
     ctx, p = open_page(browser, 1440, 900, 2)
-    p.wait_for_timeout(2200)
-    shot(p, STATES / "desktop-default.png")
-    p.locator('[data-node="reach"]').focus()
-    p.wait_for_timeout(400)
-    shot(p, STATES / "desktop-node-focus.png")
-    p.locator('[data-node="project"]').click()
-    p.mouse.move(720, 20)
+    p.wait_for_timeout(WALL_SETTLED)
+    tune(p, "Footfall")
+    shot(p, STATES / "desktop-scene-footfall.png")
+    p.locator(".led", has_text="Fans").focus()
+    p.keyboard.press("Enter")
     p.wait_for_timeout(900)
-    shot(p, STATES / "desktop-project-selected.png")
-    p.get_by_role("button", name="Clear selected connection").click()
-    p.locator(".scenario-control").get_by_role("button", name="Music", exact=True).click()
-    p.mouse.move(720, 20)
-    p.wait_for_timeout(900)
-    shot(p, STATES / "desktop-scenario-music.png")
-    p.locator(".scenario-control").get_by_role("button", name="Books", exact=True).click()
+    shot(p, STATES / "desktop-scene-fans-keyboard.png")
+    p.get_by_role("button", name="Show all four scenes").click()
     p.get_by_role("button", name="Explore").click()
     p.wait_for_timeout(300)
     shot(p, STATES / "desktop-explore-panel.png")
@@ -118,6 +126,17 @@ with sync_playwright() as pw:
     p.keyboard.press("Escape")
     ctx.close()
 
+    # Power-on: the wall a moment after first paint
+    ctx = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
+    p = ctx.new_page()
+    p.goto(BASE, wait_until="domcontentloaded")
+    p.wait_for_selector(".led")
+    p.evaluate("document.fonts.ready")
+    p.wait_for_timeout(450)
+    shot(p, STATES / "desktop-power-on.png")
+    ctx.close()
+
+    # ---------- Explorer and dialogs (2×, reduced motion) ----------
     ctx, p = open_page(browser, 1440, 900, 2, reduced=True)
     settle(p)
     p.get_by_role("link", name="I want to earn from my audience").click()
@@ -145,23 +164,28 @@ with sync_playwright() as pw:
     p.keyboard.press("Escape")
     ctx.close()
 
-    for w, h in [(1280, 800), (1024, 768), (768, 1024)]:
+    # ---------- Other widths ----------
+    for w, h in [(1280, 800), (1024, 768)]:
         ctx, p = open_page(browser, w, h, 1)
-        p.wait_for_timeout(2200)
+        p.wait_for_timeout(WALL_SETTLED)
         shot(p, STATES / f"responsive-{w}.png")
         ctx.close()
+    ctx, p = open_page(browser, 768, 1024, 2, touch=True)
+    p.wait_for_timeout(WALL_SETTLED)
+    shot(p, STATES / "tablet-768.png")
+    ctx.close()
 
     # ---------- Mobile states (2×) ----------
-    ctx, p = open_page(browser, 390, 844, 2, touch=True)
-    p.wait_for_timeout(600)
-    scroll_to(p, ".hero__story", 76)
-    p.locator(".vstory__node", has_text="Book reviewer").tap()
-    p.wait_for_timeout(400)
-    shot(p, STATES / "mobile-story-expanded.png")
-    p.locator(".scenario-control").get_by_role("button", name="Apps", exact=True).tap()
-    p.wait_for_timeout(600)
-    shot(p, STATES / "mobile-scenario-apps.png")
+    # 390 × 796 is the page area of a 390 × 844 phone below its status bar, as framed on board 02.
+    ctx, p = open_page(browser, 390, 796, 2, touch=True)
+    p.wait_for_timeout(WALL_SETTLED)
+    shot(p, STATES / "mobile-opening.png")
+    scroll_to(p, ".reach-wall", 88)
+    shot(p, STATES / "mobile-wall.png")
+    tune(p, "Fans", touch=True)
+    shot(p, STATES / "mobile-scene-fans.png")
     p.evaluate("scrollTo(0, 0)")
+    p.wait_for_timeout(300)
     p.get_by_role("button", name="Menu").tap()
     p.wait_for_timeout(500)
     shot(p, STATES / "mobile-menu.png")
@@ -174,7 +198,7 @@ with sync_playwright() as pw:
     p.keyboard.press("Escape")
     ctx.close()
 
-    ctx, p = open_page(browser, 390, 844, 2, reduced=True, touch=True)
+    ctx, p = open_page(browser, 390, 796, 2, reduced=True, touch=True)
     settle(p)
     p.get_by_role("link", name="I want to earn from my audience").tap()
     p.wait_for_timeout(400)
@@ -192,9 +216,10 @@ with sync_playwright() as pw:
     p = ctx.new_page()
     p.goto(BASE + "styleguide.html", wait_until="networkidle")
     p.evaluate("document.fonts.ready")
+    p.evaluate("Promise.all([...document.images].map(i => i.decode()))")
     p.wait_for_timeout(500)
-    shot(p, OUT / "ZOMZEY-board-03-style-guide.png")
-    for n, name in [("01", "desktop"), ("02", "mobile"), ("04", "interactions")]:
+    shot(p, OUT / "ZOMZEY-board-03-visual-system.png")
+    for n, name in [("01", "opening"), ("02", "responsive")]:
         p.goto((ROOT / "scripts" / "boards" / f"board-{n}.html").as_uri(), wait_until="load")
         p.evaluate("document.fonts.ready")
         p.evaluate("Promise.all([...document.images].map(i => i.decode()))")
